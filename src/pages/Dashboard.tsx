@@ -3,6 +3,7 @@ import {
   Users, AlertTriangle, CheckCircle2, Calendar, TrendingUp,
   ArrowRight, Clock, ChevronRight, Store, ArrowUpRight,
   Camera, Zap, ShieldCheck,
+  Sparkles,
 } from 'lucide-react';
 import {
   getDashboardMetrics,
@@ -144,6 +145,31 @@ export function Dashboard() {
           <div><p className="text-[10px] font-semibold uppercase tracking-wide text-[#71859A]">Drop-offs prevented</p><p className="font-display text-lg font-bold text-[#09254b]">{dropOffsPrevented}</p></div>
         </div>
         <p className="text-[10px] text-[#71859A] sm:col-span-3">Illustrative demo estimates until live usage data is connected.</p>
+      </section>
+
+      <section className="flex flex-col gap-3 rounded-2xl border border-[#D8ECF8] bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between" aria-labelledby="teammate-title">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#E1F4FD] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[#007FA5]">
+              <Sparkles className="h-3 w-3" aria-hidden="true" />
+              Autonomous AI Teammate · Track 3
+            </span>
+            <span className="text-[10px] font-semibold text-[#71859A]">Interactive WhatsApp · ReAct simulation</span>
+          </div>
+          <h2 id="teammate-title" className="mt-2 text-sm font-bold text-[#09254b]">
+            Watch NEXA’s AI teammate onboard a sample merchant
+          </h2>
+          <p className="mt-1 text-xs text-[#52677d]">
+            Explore a simulated WhatsApp conversation, document read, device recommendation, and application preparation.
+          </p>
+        </div>
+        <button
+          onClick={() => navigate('/agent-demo')}
+          className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#09254b] px-4 py-2 text-xs font-bold text-white shadow-sm transition-all hover:bg-[#001f56] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#00BAF2]"
+        >
+          <span>Launch Agent Simulator</span>
+          <ArrowRight className="h-4 w-4" aria-hidden="true" />
+        </button>
       </section>
 
       {/* Demo Notice */}

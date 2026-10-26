@@ -136,6 +136,21 @@ export function Topbar({ title }: TopbarProps) {
           </span>
 
           <button
+            onClick={() => navigate('/agent-demo')}
+            aria-label="Open AI Teammate Demo"
+            className="touch-target inline-flex items-center gap-1.5 rounded-full border border-[#BAE7F8] bg-[#EBF9FE] px-2.5 text-xs font-semibold text-[#002970] transition-all hover:bg-[#D5F3FD] sm:min-h-9"
+          >
+            <Sparkles className="h-3.5 w-3.5 text-[#00BAF2]" />
+            <span className="hidden sm:inline font-bold">AI Teammate Demo</span>
+            <span className="h-1.5 w-1.5 rounded-full bg-[#16845B] animate-pulse" aria-hidden="true" />
+          </button>
+
+          <span className="hidden lg:inline-flex items-center gap-1.5 rounded-full border border-[#D8ECF8] bg-[#F7FCFE] px-2.5 py-1 text-[10px] font-semibold text-[#52677d]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#16845B]" />
+            Field operations
+          </span>
+
+          <button
             type="button"
             onClick={toggleDemoMode}
             aria-pressed={demoMode}
