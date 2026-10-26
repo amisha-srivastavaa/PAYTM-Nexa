@@ -92,7 +92,16 @@ export interface MerchantDocument {
   previewUrl?: string; // object URL or data URL
   extractionStatus: ExtractionStatus;
   extractedFields: Record<string, ExtractedField>;
+  auditTrail?: DocumentAuditEntry[];
   createdAt: string;
+}
+
+export interface DocumentAuditEntry {
+  fieldKey: string;
+  sourceValue: string;
+  correctedValue: string;
+  changedAt: string;
+  changedBy: 'field agent';
 }
 
 // ─── Validation ──────────────────────────────────────────────────────────────

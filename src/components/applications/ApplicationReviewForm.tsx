@@ -68,18 +68,18 @@ export function ApplicationReviewForm({
     await new Promise(r => setTimeout(r, 400));
     const app = saveApplication({
       merchantId: merchant.id,
-      status: 'ready_for_review',
+      status: 'submitted_simulated',
       formData: form,
       readinessChecks: checks,
       recommendation,
     });
-    updateMerchant(merchant.id, { status: 'ready_for_submission' });
+    updateMerchant(merchant.id, { status: 'submitted' });
     addActivity({
       merchantId: merchant.id,
       merchantName: merchant.businessName,
-      action: 'Application marked Ready for Review',
+      action: 'Simulated submission completed in local demo',
       timestamp: new Date().toISOString(),
-      status: 'ready_for_submission',
+      status: 'submitted',
     });
     setSavedApp(app);
     setSubmitting(false);
@@ -98,7 +98,7 @@ export function ApplicationReviewForm({
             <ApplicationStatusBadge status={savedApp?.status ?? 'draft'} />
           </div>
           <p className="text-[11px] text-[#667085] mt-0.5">
-            Verify merchant agreement details and confirm field acquisition readiness.
+            Review the merchant details before the local, simulated submission.
           </p>
         </div>
 
@@ -195,7 +195,7 @@ export function ApplicationReviewForm({
             </div>
 
             {/* Field Sales Sign-off Confirmation */}
-            <div className="p-3 bg-[#FAFCFE] border-t border-[#E4EAF2] space-y-3">
+            <div className="sticky bottom-16 z-10 p-3 bg-[#FAFCFE] border-t border-[#E4EAF2] space-y-3 md:bottom-0">
               <label className="flex items-start gap-2.5 cursor-pointer">
                 <input
                   type="checkbox"
@@ -204,7 +204,7 @@ export function ApplicationReviewForm({
                   className="mt-0.5 w-4 h-4 rounded border-[#D0D5DD] text-[#00BAF2] focus:ring-[#00BAF2]"
                 />
                 <span className="text-[11px] text-[#172B4D] leading-tight">
-                  I confirm that physical premises and merchant identity have been reviewed per Paytm field onboarding guidelines.
+                  I have reviewed these illustrative merchant details and understand this action does not send an application.
                 </span>
               </label>
 
@@ -217,7 +217,7 @@ export function ApplicationReviewForm({
                 onClick={handleMarkReady}
                 leftIcon={<ShieldCheck className="w-4 h-4" />}
               >
-                Mark Ready for Review
+                Simulated submission
               </Button>
 
               {!allPassed && (
@@ -229,22 +229,22 @@ export function ApplicationReviewForm({
           </div>
 
           <DemoNotice>
-            Marking ready updates the prototype pipeline status to "Ready for Review". Live banking submission is excluded from this hackathon prototype.
+            Simulated submission updates only this browser's local demo record. No application is sent to Paytm and no approval is implied.
           </DemoNotice>
         </div>
       </div>
 
-      {savedApp && savedApp.status === 'ready_for_review' && (
+      {savedApp && savedApp.status === 'submitted_simulated' && (
         <div className="bg-[#ECFDF3] border border-[#A6F4C5] rounded-lg p-4 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <CheckCircle2 className="w-5 h-5 text-[#16845B]" />
             <div>
-              <p className="text-xs font-bold text-[#16845B]">Application Marked Ready for Review</p>
-              <p className="text-[11px] text-[#126E4B]">Record is queued for territory operations verification.</p>
+              <p className="text-xs font-bold text-[#16845B]">Simulated submission complete</p>
+              <p className="text-[11px] text-[#126E4B]">Saved to this browser only. No application was sent and no approval was issued.</p>
             </div>
           </div>
-          <Button variant="outline" size="sm" onClick={() => navigate('/applications')}>
-            View in Applications
+          <Button variant="outline" size="sm" onClick={() => navigate('/')}>
+            See updated dashboard
           </Button>
         </div>
       )}

@@ -564,19 +564,17 @@ Before a demo or release, verify the following:
 
 ## Demo Walkthrough
 
-A focused three-minute demonstration can follow this sequence:
+A focused three-minute demonstration can follow this sequence. In the app header, turn on **Demo mode** to reset local records and open the preloaded Sharma General Store capture flow:
 
-1. **Introduce the problem:** Manual merchant data capture and onboarding can be repetitive and error-prone.
-2. **Create a merchant:** Enter a sample merchant profile and upload a prepared shop image.
-3. **Show extraction:** Display extracted fields and flag missing or inconsistent information.
-4. **Correct data:** Update the fields requiring review.
-5. **Show recommendation:** Present an explainable device suggestion based on the sample catalogue.
-6. **Review application:** Inspect the prefilled form and save it as ready for review.
-7. **Show tracking:** Return to the dashboard and show the updated status.
-8. **Optional route planning:** Display a suggested next visit using synthetic locations.
-9. **Explain future integrations:** Describe how official merchant-management, catalogue, or mapping integrations could connect if authorized access is provided.
+1. **Capture:** Review the preloaded sample storefront and run the local extraction demo.
+2. **Review AI read:** Inspect confidence, source evidence, and the low-confidence proprietor name.
+3. **Correct once:** Edit the proprietor name to “Raju Sharma” and confirm the extracted profile.
+4. **See readiness:** Watch the merchant readiness ring update as the profile is completed.
+5. **Explore recommendation:** Compare the suggested QR Stand + Soundbox setup with its alternative and the listed reasons.
+6. **Simulated submission:** Confirm the local-only action; no application is sent to Paytm and no approval is implied.
+7. **Show impact:** Return to the dashboard to see the updated merchant status and illustrative impact estimates.
 
-Use synthetic data and clearly label simulated integrations throughout the demo.
+Use the header theme control to switch between light and dark. All demo records are synthetic and stored in browser local storage.
 
 ## Roadmap
 

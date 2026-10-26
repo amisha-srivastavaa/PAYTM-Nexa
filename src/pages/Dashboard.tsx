@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import {
   Users, AlertTriangle, CheckCircle2, Calendar, TrendingUp,
-  ArrowRight, UserPlus, Clock, ChevronRight, Store, ArrowUpRight,
+  ArrowRight, Clock, ChevronRight, Store, ArrowUpRight,
+  Camera, Zap, ShieldCheck,
 } from 'lucide-react';
 import {
   getDashboardMetrics,
@@ -20,26 +21,27 @@ interface MetricCardProps {
   value: number;
   icon: React.ReactNode;
   hint: string;
+  iconBg?: string;
   onClick?: () => void;
   highlight?: boolean;
 }
 
-function MetricCard({ label, value, icon, hint, onClick, highlight }: MetricCardProps) {
+function MetricCard({ label, value, icon, hint, iconBg = 'bg-[#E5F6FD] text-[#00BAF2]', onClick, highlight }: MetricCardProps) {
   const El = onClick ? 'button' : 'div';
   return (
     <El
-      className={`bg-white border rounded-lg p-3.5 text-left w-full transition-all shadow-xs ${
-        onClick ? 'hover:border-[#00BAF2] hover:shadow-sm cursor-pointer' : ''
-      } ${highlight && value > 0 ? 'border-[#FEDF89] bg-[#FFFAEB]/30' : 'border-[#E4EAF2]'}`}
+      className={`bg-white border rounded-lg p-3.5 text-left w-full transition-all shadow-paytm ${
+        onClick ? 'hover:border-[#00BAF2] hover:shadow-paytm-md cursor-pointer' : ''
+      } ${highlight && value > 0 ? 'border-[#FEDF89] bg-[#FFFAEB]/30' : 'border-[#D8ECF8]'}`}
       onClick={onClick}
     >
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0 flex-1">
-          <p className="text-[11px] font-medium text-[#667085] truncate">{label}</p>
-          <p className="text-xl font-bold text-[#172B4D] mt-1 tabular-nums tracking-tight">{value}</p>
-          <p className="text-[10px] text-[#98A2B3] mt-0.5 truncate">{hint}</p>
+          <p className="text-[11px] font-semibold text-[#5E6C84] truncate">{label}</p>
+          <p className="text-xl font-bold text-[#002970] mt-1 tabular-nums tracking-tight">{value}</p>
+          <p className="text-[10px] text-[#8993A4] mt-0.5 truncate">{hint}</p>
         </div>
-        <div className="w-8 h-8 rounded-md bg-[#EDF3FB] text-[#002970] flex items-center justify-center flex-shrink-0">
+        <div className={`w-8 h-8 rounded-lg ${iconBg} flex items-center justify-center flex-shrink-0 border border-[#BAE7F8]`}>
           {icon}
         </div>
       </div>
@@ -66,30 +68,87 @@ export function Dashboard() {
   const reviewCount = merchants.filter(m => m.status === 'needs_review' || m.status === 'incomplete').length;
   const readyCount = merchants.filter(m => m.status === 'ready_for_submission').length;
   const submittedCount = merchants.filter(m => m.status === 'submitted').length;
+  const today = new Date().toDateString();
+  const completedToday = merchants.filter(m =>
+    ['ready_for_submission', 'submitted'].includes(m.status) &&
+    new Date(m.updatedAt).toDateString() === today
+  ).length;
+  const onboardedToday = completedToday || 4;
+  const timeSavedMinutes = completedToday ? completedToday * 22 : 88;
+  const dropOffsPrevented = completedToday ? Math.ceil(completedToday * 1.5) : 6;
 
   return (
     <div className="p-4 sm:p-6 max-w-7xl mx-auto space-y-4">
-      {/* Page Header */}
+      {/* Page Header with Paytm Light-Blue Flair */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div>
-          <h1 className="text-base font-bold text-[#002970] tracking-tight">Merchant Overview</h1>
-          <p className="text-xs text-[#667085] mt-0.5">
+          <div className="flex items-center gap-2">
+            <h1 className="text-xl sm:text-2xl font-bold text-[#09254b] tracking-tight">Merchant Overview</h1>
+            <span className="text-[10px] font-bold text-[#007FA5] bg-[#E1F4FD] border border-[#BAE7F8] px-2 py-0.5 rounded">
+              Bengaluru Territory
+            </span>
+          </div>
+          <p className="text-xs text-[#5E6C84] mt-0.5">
             Track merchant onboarding, pending reviews, and field follow-ups across Bengaluru territory.
           </p>
         </div>
-        <Button
-          variant="primary"
-          size="sm"
-          leftIcon={<UserPlus className="w-3.5 h-3.5" />}
-          onClick={() => navigate('/new-merchant')}
-        >
-          Add Merchant
-        </Button>
       </div>
+
+      <section className="relative overflow-hidden rounded-[1.5rem] border border-[#d7e9ef] bg-[linear-gradient(125deg,#ffffff_0%,#f0f9fb_60%,#e9f7f8_100%)] p-5 shadow-[0_14px_40px_rgba(9,37,75,0.07)] sm:p-7" aria-labelledby="capture-title">
+        <div className="relative z-10 grid items-center gap-6 md:grid-cols-[1fr_auto]">
+          <div className="max-w-2xl">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#BAE7F8] bg-[#E1F4FD] px-3 py-1 text-[10px] font-bold uppercase tracking-[0.14em] text-[#007FA5]">
+              <Zap className="h-3 w-3" aria-hidden="true" /> Your next merchant, made easy
+            </span>
+            <h2 id="capture-title" className="mt-3 font-display text-2xl font-bold leading-tight text-[#09254b] sm:text-3xl">
+              Capture once.<br className="hidden sm:block" /> Let NEXA do the busywork.
+            </h2>
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-[#52677d]">
+              Photograph a storefront, review what AI reads, then get a clear device match and an onboarding-ready profile.
+            </p>
+            <div className="mt-4 flex flex-wrap items-center gap-2 text-[11px] font-semibold text-[#52677d]">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/80 px-3 py-1.5">
+                <ShieldCheck className="h-3.5 w-3.5 text-[#16845B]" aria-hidden="true" /> You review every field
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-white/80 px-3 py-1.5">
+                <Clock className="h-3.5 w-3.5 text-[#007FA5]" aria-hidden="true" /> 25 min manual → ~3 min with NEXA
+              </span>
+            </div>
+          </div>
+          <Button
+            variant="navy"
+            size="lg"
+            className="min-h-14 w-full rounded-2xl px-6 text-sm shadow-[0_10px_22px_rgba(9,37,75,0.18)] md:w-auto"
+            leftIcon={<Camera className="h-5 w-5" />}
+            rightIcon={<ArrowRight className="h-4 w-4" />}
+            onClick={() => navigate('/new-merchant')}
+            aria-label="Capture a new merchant"
+          >
+            Capture a merchant
+          </Button>
+        </div>
+        <div className="pointer-events-none absolute -right-12 -top-20 h-64 w-64 rounded-full border-[28px] border-[#00b8de]/[0.07]" aria-hidden="true" />
+      </section>
+
+      <section className="grid grid-cols-1 gap-2 sm:grid-cols-3" aria-label="Illustrative impact today">
+        <div className="flex items-center gap-3 rounded-2xl border border-[#D8ECF8] bg-white p-3.5 shadow-sm">
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e6f7f9] text-[#007FA5]"><Users className="h-5 w-5" aria-hidden="true" /></span>
+          <div><p className="text-[10px] font-semibold uppercase tracking-wide text-[#71859A]">Onboarded today</p><p className="font-display text-lg font-bold text-[#09254b]">{onboardedToday}</p></div>
+        </div>
+        <div className="flex items-center gap-3 rounded-2xl border border-[#D8ECF8] bg-white p-3.5 shadow-sm">
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#E1F4FD] text-[#007FA5]"><Clock className="h-5 w-5" aria-hidden="true" /></span>
+          <div><p className="text-[10px] font-semibold uppercase tracking-wide text-[#71859A]">Field time saved</p><p className="font-display text-lg font-bold text-[#09254b]">{timeSavedMinutes} min</p></div>
+        </div>
+        <div className="flex items-center gap-3 rounded-2xl border border-[#D8ECF8] bg-white p-3.5 shadow-sm">
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#eef8f2] text-[#16845B]"><ShieldCheck className="h-5 w-5" aria-hidden="true" /></span>
+          <div><p className="text-[10px] font-semibold uppercase tracking-wide text-[#71859A]">Drop-offs prevented</p><p className="font-display text-lg font-bold text-[#09254b]">{dropOffsPrevented}</p></div>
+        </div>
+        <p className="text-[10px] text-[#71859A] sm:col-span-3">Illustrative demo estimates until live usage data is connected.</p>
+      </section>
 
       {/* Demo Notice */}
       <DemoNotice>
-        Operational metrics reflect seeded prototype records. Field sales workflow simulation is active.
+        Local prototype data only. No live merchant systems or Paytm submission services are connected.
       </DemoNotice>
 
       {/* Key Metrics Row (4 metrics) */}
@@ -97,7 +156,8 @@ export function Dashboard() {
         <MetricCard
           label="Total Merchants"
           value={metrics.totalMerchants}
-          icon={<Users className="w-4 h-4 text-[#002970]" />}
+          icon={<Users className="w-4 h-4 text-[#00BAF2]" />}
+          iconBg="bg-[#E5F6FD] text-[#00BAF2]"
           hint="Assigned in territory"
           onClick={() => navigate('/merchants')}
         />
@@ -105,6 +165,7 @@ export function Dashboard() {
           label="Pending Review"
           value={metrics.needsReview}
           icon={<AlertTriangle className="w-4 h-4 text-[#B76E00]" />}
+          iconBg="bg-[#FFFAEB] text-[#B76E00]"
           hint="Action required"
           onClick={() => navigate('/merchants?filter=needs_review')}
           highlight
@@ -113,6 +174,7 @@ export function Dashboard() {
           label="Ready for Submission"
           value={metrics.readyForSubmission}
           icon={<CheckCircle2 className="w-4 h-4 text-[#16845B]" />}
+          iconBg="bg-[#ECFDF5] text-[#16845B]"
           hint="Verified applications"
           onClick={() => navigate('/applications')}
         />
@@ -120,6 +182,7 @@ export function Dashboard() {
           label="Follow-ups Due"
           value={metrics.followUpsDue}
           icon={<Calendar className="w-4 h-4 text-[#00BAF2]" />}
+          iconBg="bg-[#EAF6FD] text-[#00BAF2]"
           hint="Pending merchant visits"
           onClick={() => navigate('/follow-ups')}
         />
@@ -130,17 +193,17 @@ export function Dashboard() {
         {/* Left Column: Recent Merchant Activity (7 cols) */}
         <div className="lg:col-span-7 space-y-4">
           {/* Recent Merchant Activity Table */}
-          <div className="bg-white border border-[#E4EAF2] rounded-lg shadow-xs overflow-hidden">
-            <div className="px-4 py-3 border-b border-[#E4EAF2] flex items-center justify-between">
+          <div className="bg-white border border-[#D8ECF8] rounded-lg shadow-paytm overflow-hidden">
+            <div className="px-4 py-3 border-b border-[#D8ECF8] bg-[#F7FCFE] flex items-center justify-between">
               <div>
-                <h2 className="text-xs font-semibold text-[#172B4D]">Recent Merchant Activity</h2>
-                <p className="text-[10px] text-[#667085]">Recently profiled and updated storefronts</p>
+                <h2 className="text-xs font-bold text-[#002970]">Recent Merchant Activity</h2>
+                <p className="text-[10px] text-[#5E6C84]">Recently profiled and updated storefronts</p>
               </div>
               <Button
                 variant="ghost"
                 size="xs"
                 onClick={() => navigate('/merchants')}
-                rightIcon={<ArrowRight className="w-3 h-3" />}
+                rightIcon={<ArrowRight className="w-3 h-3 text-[#00BAF2]" />}
               >
                 View Directory
               </Button>
@@ -149,27 +212,33 @@ export function Dashboard() {
             <div className="overflow-x-auto">
               <table className="w-full text-xs" aria-label="Recent merchants table">
                 <thead>
-                  <tr className="border-b border-[#E4EAF2] bg-[#FAFCFE] text-[#667085]">
-                    <th className="text-left px-3.5 py-2 font-medium">Merchant</th>
-                    <th className="text-left px-3.5 py-2 font-medium">Category</th>
-                    <th className="text-left px-3.5 py-2 font-medium">Last Updated</th>
-                    <th className="text-left px-3.5 py-2 font-medium">Status</th>
-                    <th className="text-right px-3.5 py-2 font-medium">Action</th>
+                  <tr className="border-b border-[#D8ECF8] bg-[#F2F9FD] text-[#002970]">
+                    <th className="text-left px-3.5 py-2.5 font-bold">Merchant</th>
+                    <th className="text-left px-3.5 py-2.5 font-bold">Category</th>
+                    <th className="text-left px-3.5 py-2.5 font-bold">Last Updated</th>
+                    <th className="text-left px-3.5 py-2.5 font-bold">Status</th>
+                    <th className="text-right px-3.5 py-2.5 font-bold">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#E4EAF2]">
-                  {merchants.slice(0, 6).map(m => (
-                    <tr key={m.id} className="hover:bg-[#F8F9FC] transition-colors">
+                <tbody className="divide-y divide-[#D8ECF8]">
+                  {merchants.length === 0 ? (
+                    <tr><td colSpan={5} className="px-4 py-12 text-center">
+                      <Store className="mx-auto h-8 w-8 text-[#00b8de]" aria-hidden="true" />
+                      <p className="mt-2 text-sm font-semibold text-[#09254b]">Your merchant list is ready for its first story.</p>
+                      <button className="mt-2 text-xs font-bold text-[#007FA5] underline" onClick={() => navigate('/new-merchant')}>Capture a merchant</button>
+                    </td></tr>
+                  ) : merchants.slice(0, 6).map(m => (
+                    <tr key={m.id} className="hover:bg-[#F5FBFE] transition-colors">
                       <td className="px-3.5 py-2.5">
-                        <p className="font-semibold text-[#172B4D] truncate">{m.businessName}</p>
-                        <p className="text-[10px] text-[#667085] truncate">{m.address.city} · {m.ownerName}</p>
+                        <p className="font-bold text-[#002970] truncate">{m.businessName}</p>
+                        <p className="text-[10px] text-[#5E6C84] truncate">{m.address.city} · {m.ownerName}</p>
                       </td>
                       <td className="px-3.5 py-2.5">
-                        <span className="text-[11px] text-[#344054] capitalize bg-[#F2F4F7] px-1.5 py-0.5 rounded">
+                        <span className="text-[11px] text-[#005B7A] capitalize bg-[#EBF7FD] border border-[#BAE7F8] px-1.5 py-0.5 rounded font-medium">
                           {m.businessType}
                         </span>
                       </td>
-                      <td className="px-3.5 py-2.5 text-[#667085] text-[11px]">
+                      <td className="px-3.5 py-2.5 text-[#5E6C84] text-[11px]">
                         {timeAgo(m.updatedAt)}
                       </td>
                       <td className="px-3.5 py-2.5">
@@ -192,20 +261,20 @@ export function Dashboard() {
           </div>
 
           {/* Operational Log / Event Stream */}
-          <div className="bg-white border border-[#E4EAF2] rounded-lg shadow-xs overflow-hidden">
-            <div className="px-4 py-3 border-b border-[#E4EAF2]">
-              <h2 className="text-xs font-semibold text-[#172B4D]">Field Action Stream</h2>
+          <div className="bg-white border border-[#D8ECF8] rounded-lg shadow-paytm overflow-hidden">
+            <div className="px-4 py-3 border-b border-[#D8ECF8] bg-[#F7FCFE]">
+              <h2 className="text-xs font-bold text-[#002970]">Field Action Stream</h2>
             </div>
-            <div className="divide-y divide-[#E4EAF2]">
+            <div className="divide-y divide-[#D8ECF8]">
               {activity.slice(0, 5).map((act, i) => (
-                <div key={i} className="px-4 py-2.5 flex items-center justify-between text-xs hover:bg-[#FAFCFE]">
+                <div key={i} className="px-4 py-2.5 flex items-center justify-between text-xs hover:bg-[#F5FBFE]">
                   <div className="flex items-center gap-2.5 min-w-0">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#00BAF2] flex-shrink-0" />
+                    <span className="w-2 h-2 rounded-full bg-[#00BAF2] flex-shrink-0" />
                     <p className="text-[#172B4D] truncate">
-                      <strong className="text-[#002970]">{act.merchantName}</strong> — {act.action}
+                      <strong className="text-[#002970] font-semibold">{act.merchantName}</strong> — {act.action}
                     </p>
                   </div>
-                  <span className="text-[10px] text-[#98A2B3] flex-shrink-0 ml-2">{timeAgo(act.timestamp)}</span>
+                  <span className="text-[10px] text-[#8993A4] flex-shrink-0 ml-2 font-medium">{timeAgo(act.timestamp)}</span>
                 </div>
               ))}
             </div>
@@ -215,54 +284,54 @@ export function Dashboard() {
         {/* Right Column: Pending Actions & Pipeline (5 cols) */}
         <div className="lg:col-span-5 space-y-4">
           {/* Onboarding Progress Summary */}
-          <div className="bg-white border border-[#E4EAF2] rounded-lg p-4 shadow-xs space-y-3">
-            <h2 className="text-xs font-semibold text-[#172B4D] uppercase tracking-wide">
+          <div className="bg-white border border-[#D8ECF8] rounded-lg p-4 shadow-paytm space-y-3">
+            <h2 className="text-xs font-bold text-[#002970] uppercase tracking-wide">
               Onboarding Pipeline Funnel
             </h2>
             <div className="grid grid-cols-4 gap-2 text-center">
-              <div className="p-2 rounded bg-[#EBF9FE] border border-[#B2E9FC]">
-                <p className="text-sm font-bold text-[#002970] tabular-nums">{newCount}</p>
-                <p className="text-[10px] text-[#007FA5] font-medium mt-0.5">New</p>
+              <div className="p-2 rounded-lg bg-[#E5F6FD] border border-[#BAE7F8]">
+                <p className="text-sm font-bold text-[#00BAF2] tabular-nums">{newCount}</p>
+                <p className="text-[10px] text-[#007FA5] font-semibold mt-0.5">New</p>
               </div>
-              <div className="p-2 rounded bg-[#FFFAEB] border border-[#FEDF89]">
+              <div className="p-2 rounded-lg bg-[#FFFAEB] border border-[#FEDF89]">
                 <p className="text-sm font-bold text-[#B76E00] tabular-nums">{reviewCount}</p>
-                <p className="text-[10px] text-[#B76E00] font-medium mt-0.5">Review</p>
+                <p className="text-[10px] text-[#B76E00] font-semibold mt-0.5">Review</p>
               </div>
-              <div className="p-2 rounded bg-[#ECFDF3] border border-[#A6F4C5]">
+              <div className="p-2 rounded-lg bg-[#ECFDF5] border border-[#A6F4C5]">
                 <p className="text-sm font-bold text-[#16845B] tabular-nums">{readyCount}</p>
-                <p className="text-[10px] text-[#16845B] font-medium mt-0.5">Ready</p>
+                <p className="text-[10px] text-[#16845B] font-semibold mt-0.5">Ready</p>
               </div>
-              <div className="p-2 rounded bg-[#F8F9FC] border border-[#E4EAF2]">
-                <p className="text-sm font-bold text-[#344054] tabular-nums">{submittedCount}</p>
-                <p className="text-[10px] text-[#667085] font-medium mt-0.5">Submitted</p>
+              <div className="p-2 rounded-lg bg-[#F0F8FD] border border-[#D8ECF8]">
+                <p className="text-sm font-bold text-[#002970] tabular-nums">{submittedCount}</p>
+                <p className="text-[10px] text-[#5E6C84] font-semibold mt-0.5">Submitted</p>
               </div>
             </div>
           </div>
 
           {/* Pending Actions Section */}
-          <div className="bg-white border border-[#E4EAF2] rounded-lg shadow-xs overflow-hidden">
-            <div className="px-4 py-3 border-b border-[#E4EAF2] flex items-center justify-between">
+          <div className="bg-white border border-[#D8ECF8] rounded-lg shadow-paytm overflow-hidden">
+            <div className="px-4 py-3 border-b border-[#D8ECF8] bg-[#F7FCFE] flex items-center justify-between">
               <div>
-                <h2 className="text-xs font-semibold text-[#172B4D]">Pending Review Queue</h2>
-                <p className="text-[10px] text-[#667085]">Merchants requiring documents or checks</p>
+                <h2 className="text-xs font-bold text-[#002970]">Pending Review Queue</h2>
+                <p className="text-[10px] text-[#5E6C84]">Merchants requiring documents or checks</p>
               </div>
-              <span className="text-[10px] font-semibold text-[#B76E00] bg-[#FFFAEB] px-1.5 py-0.2 rounded border border-[#FEDF89]">
+              <span className="text-[10px] font-bold text-[#B76E00] bg-[#FFFAEB] px-2 py-0.5 rounded border border-[#FEDF89]">
                 {incompleteMerchants.length} pending
               </span>
             </div>
 
-            <div className="divide-y divide-[#E4EAF2]">
+            <div className="divide-y divide-[#D8ECF8]">
               {incompleteMerchants.slice(0, 4).map(m => (
-                <div key={m.id} className="p-3 flex items-center justify-between gap-2 hover:bg-[#FAFCFE]">
+                <div key={m.id} className="p-3 flex items-center justify-between gap-2 hover:bg-[#F5FBFE]">
                   <div className="min-w-0">
-                    <p className="text-xs font-semibold text-[#172B4D] truncate">{m.businessName}</p>
-                    <p className="text-[10px] text-[#667085] truncate">{m.address.city} · {m.phone}</p>
+                    <p className="text-xs font-bold text-[#002970] truncate">{m.businessName}</p>
+                    <p className="text-[10px] text-[#5E6C84] truncate">{m.address.city} · {m.phone}</p>
                   </div>
                   <Button
                     variant="outline"
                     size="xs"
                     onClick={() => navigate(`/merchants/${m.id}/edit`)}
-                    rightIcon={<ArrowRight className="w-3 h-3" />}
+                    rightIcon={<ArrowRight className="w-3 h-3 text-[#00BAF2]" />}
                   >
                     Resume
                   </Button>
@@ -272,11 +341,11 @@ export function Dashboard() {
           </div>
 
           {/* Follow-ups Due */}
-          <div className="bg-white border border-[#E4EAF2] rounded-lg shadow-xs overflow-hidden">
-            <div className="px-4 py-3 border-b border-[#E4EAF2] flex items-center justify-between">
+          <div className="bg-white border border-[#D8ECF8] rounded-lg shadow-paytm overflow-hidden">
+            <div className="px-4 py-3 border-b border-[#D8ECF8] bg-[#F7FCFE] flex items-center justify-between">
               <div>
-                <h2 className="text-xs font-semibold text-[#172B4D]">Upcoming Field Visits</h2>
-                <p className="text-[10px] text-[#667085]">Follow-ups scheduled for today</p>
+                <h2 className="text-xs font-bold text-[#002970]">Upcoming Field Visits</h2>
+                <p className="text-[10px] text-[#5E6C84]">Follow-ups scheduled for today</p>
               </div>
               <Button
                 variant="ghost"
@@ -287,15 +356,15 @@ export function Dashboard() {
               </Button>
             </div>
 
-            <div className="divide-y divide-[#E4EAF2]">
+            <div className="divide-y divide-[#D8ECF8]">
               {pendingVisits.map(v => (
-                <div key={v.id} className="p-3 flex items-start justify-between gap-2 hover:bg-[#FAFCFE]">
+                <div key={v.id} className="p-3 flex items-start justify-between gap-2 hover:bg-[#F5FBFE]">
                   <div className="min-w-0">
-                    <p className="text-xs font-semibold text-[#172B4D] truncate">{v.merchantName}</p>
-                    <p className="text-[10px] text-[#002970] font-medium">{formatDateTime(v.scheduledAt)}</p>
-                    {v.reason && <p className="text-[10px] text-[#667085] truncate mt-0.5">{v.reason}</p>}
+                    <p className="text-xs font-bold text-[#002970] truncate">{v.merchantName}</p>
+                    <p className="text-[10px] text-[#00BAF2] font-semibold">{formatDateTime(v.scheduledAt)}</p>
+                    {v.reason && <p className="text-[10px] text-[#5E6C84] truncate mt-0.5">{v.reason}</p>}
                   </div>
-                  <span className="text-[10px] text-[#007FA5] bg-[#EBF9FE] px-1.5 py-0.5 rounded capitalize flex-shrink-0">
+                  <span className="text-[10px] font-semibold text-[#007FA5] bg-[#E1F4FD] border border-[#BAE7F8] px-1.5 py-0.5 rounded capitalize flex-shrink-0">
                     {v.status}
                   </span>
                 </div>

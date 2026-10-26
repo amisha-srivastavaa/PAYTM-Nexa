@@ -348,7 +348,7 @@ export function MerchantDetailsForm({ merchant, onSaved, onCancel }: MerchantDet
             <h2 className="text-xs font-semibold text-[#172B4D] uppercase tracking-wide">
               4. Payment Acceptance & Hardware Needs
             </h2>
-            <p className="text-[10px] text-[#667085]">Informs Paytm AI device recommendations in Step 4</p>
+            <p className="text-[10px] text-[#667085]">Informs NEXA device recommendations in Step 4</p>
           </div>
         </div>
 
@@ -438,7 +438,7 @@ export function MerchantDetailsForm({ merchant, onSaved, onCancel }: MerchantDet
       )}
 
       {/* Docked Action Bar */}
-      <div className="bg-white border border-[#E4EAF2] rounded-lg p-3.5 flex items-center justify-between shadow-xs">
+      <div className="sticky bottom-16 z-10 bg-white border border-[#E4EAF2] rounded-lg p-3.5 flex items-center justify-between shadow-xs md:bottom-0">
         <Button
           variant="ghost"
           size="sm"

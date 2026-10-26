@@ -9,23 +9,23 @@ interface BadgeProps {
 }
 
 export function Badge({ label, variant, className, dot = false }: BadgeProps) {
-  const base = 'inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-medium leading-4 border';
+  const base = 'inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-semibold leading-4 border';
   const variants = {
-    default: 'bg-[#F2F4F7] text-[#344054] border-[#EAECF0]',
-    success: 'bg-[#ECFDF3] text-[#16845B] border-[#A6F4C5]',
+    default: 'bg-[#F0F8FD] text-[#002970] border-[#D8ECF8]',
+    success: 'bg-[#ECFDF5] text-[#16845B] border-[#A6F4C5]',
     warning: 'bg-[#FFFAEB] text-[#B76E00] border-[#FEDF89]',
     error: 'bg-[#FEF3F2] text-[#D92D20] border-[#FECDCA]',
-    info: 'bg-[#EBF9FE] text-[#007FA5] border-[#B2E9FC]',
-    neutral: 'bg-[#F8F9FC] text-[#667085] border-[#E4EAF2]',
-    navy: 'bg-[#EDF3FB] text-[#002970] border-[#D0E1F9]',
+    info: 'bg-[#E5F6FD] text-[#007FA5] border-[#BAE7F8]',
+    neutral: 'bg-[#F4F9FD] text-[#5E6C84] border-[#D8ECF8]',
+    navy: 'bg-[#EDF3FB] text-[#002970] border-[#CDE0F5]',
   };
   const dotColors = {
-    default: 'bg-[#667085]',
+    default: 'bg-[#00BAF2]',
     success: 'bg-[#16845B]',
     warning: 'bg-[#B76E00]',
     error: 'bg-[#D92D20]',
     info: 'bg-[#00BAF2]',
-    neutral: 'bg-[#98A2B3]',
+    neutral: 'bg-[#8993A4]',
     navy: 'bg-[#002970]',
   };
 
@@ -44,7 +44,7 @@ export function MerchantStatusBadge({ status }: { status: MerchantStatus }) {
     needs_review: { label: 'Needs Review', variant: 'warning' },
     incomplete: { label: 'Incomplete', variant: 'warning' },
     ready_for_submission: { label: 'Ready', variant: 'success' },
-    submitted: { label: 'Submitted', variant: 'neutral' },
+    submitted: { label: 'Submitted (Simulated)', variant: 'neutral' },
     extraction_failed: { label: 'Extraction Failed', variant: 'error' },
   };
   const { label, variant } = map[status];
@@ -55,7 +55,7 @@ export function ApplicationStatusBadge({ status }: { status: ApplicationStatus }
   const map: Record<ApplicationStatus, { label: string; variant: BadgeProps['variant'] }> = {
     draft: { label: 'Draft', variant: 'neutral' },
     ready_for_review: { label: 'Ready for Review', variant: 'success' },
-    submitted_simulated: { label: 'Submitted (Simulated)', variant: 'navy' },
+    submitted_simulated: { label: 'Submitted (Simulated)', variant: 'info' },
     rejected: { label: 'Rejected', variant: 'error' },
   };
   const { label, variant } = map[status];
