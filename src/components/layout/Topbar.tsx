@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Bell, User, ChevronDown, RotateCcw, Info, X } from 'lucide-react';
+import { Search, Bell, User, ChevronDown, RotateCcw, Info, X, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getMerchants, resetDemoStore } from '@/lib/store';
 
@@ -97,6 +97,16 @@ export function Topbar({ title }: TopbarProps) {
 
         {/* Right Actions */}
         <div className="ml-auto flex items-center gap-2">
+          {/* Autonomous Agent Demo CTA */}
+          <button
+            onClick={() => navigate('/agent-demo')}
+            className="h-7 px-2.5 flex items-center gap-1.5 text-xs font-semibold text-[#002970] bg-[#EBF9FE] hover:bg-[#D5F3FD] border border-[#B2E9FC] rounded-md transition-all shadow-2xs group"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-[#00BAF2] group-hover:rotate-12 transition-transform" />
+            <span className="hidden sm:inline font-bold">AI Teammate Demo</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#16845B] animate-pulse" />
+          </button>
+
           {/* Environment Tag */}
           <span className="hidden lg:inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-medium text-[#667085] bg-[#F8F9FC] border border-[#E4EAF2]">
             <span className="w-1.5 h-1.5 rounded-full bg-[#16845B]" />

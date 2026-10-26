@@ -4,6 +4,7 @@ import { Topbar } from './Topbar';
 
 const TITLES: Record<string, string> = {
   '/': 'Merchant Overview',
+  '/agent-demo': 'Autonomous Sales Teammate (Live Demo)',
   '/merchants': 'Merchant Directory',
   '/new-merchant': 'Create Merchant Profile',
   '/applications': 'Applications',

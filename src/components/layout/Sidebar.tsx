@@ -9,6 +9,8 @@ import {
   MapPin,
   ChevronRight,
   ShieldCheck,
+  Bot,
+  Sparkles,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -21,10 +23,11 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { to: '/', icon: <LayoutDashboard className="w-4 h-4" />, label: 'Overview' },
-  { to: '/merchants', icon: <Users className="w-4 h-4" />, label: 'Merchants', group: 'Primary' },
-  { to: '/new-merchant', icon: <UserPlus className="w-4 h-4" />, label: 'New Merchant', group: 'Primary' },
-  { to: '/applications', icon: <FileText className="w-4 h-4" />, label: 'Applications', group: 'Primary' },
-  { to: '/recommendations', icon: <MonitorSmartphone className="w-4 h-4" />, label: 'Devices', group: 'Primary' },
+  { to: '/agent-demo', icon: <Bot className="w-4 h-4 text-[#00BAF2]" />, label: 'AI Teammate (Live)', group: 'Autonomous Teammate' },
+  { to: '/merchants', icon: <Users className="w-4 h-4" />, label: 'Merchants', group: 'Field Operations' },
+  { to: '/new-merchant', icon: <UserPlus className="w-4 h-4" />, label: 'New Merchant', group: 'Field Operations' },
+  { to: '/applications', icon: <FileText className="w-4 h-4" />, label: 'Applications', group: 'Field Operations' },
+  { to: '/recommendations', icon: <MonitorSmartphone className="w-4 h-4" />, label: 'Devices', group: 'Field Operations' },
   { to: '/follow-ups', icon: <Calendar className="w-4 h-4" />, label: 'Follow-ups', group: 'Planning' },
   { to: '/route-planner', icon: <MapPin className="w-4 h-4" />, label: 'Route Planner', group: 'Planning' },
 ];

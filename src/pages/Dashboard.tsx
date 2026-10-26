@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   Users, AlertTriangle, CheckCircle2, Calendar, TrendingUp,
   ArrowRight, UserPlus, Clock, ChevronRight, Store, ArrowUpRight,
+  Sparkles, Bot,
 } from 'lucide-react';
 import {
   getDashboardMetrics,
@@ -85,6 +86,37 @@ export function Dashboard() {
         >
           Add Merchant
         </Button>
+      </div>
+
+      {/* Autonomous AI Teammate Flagship Banner */}
+      <div className="relative overflow-hidden rounded-xl bg-gradient-to-r from-[#002970] via-[#003896] to-[#0055c9] p-4 text-white shadow-sm border border-[#002970]">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div className="space-y-1 max-w-2xl">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-[#00BAF2] text-[#002970] uppercase tracking-wider">
+                <Sparkles className="w-3 h-3 text-[#002970]" />
+                Autonomous AI Teammate · Track 3
+              </span>
+              <span className="text-[11px] text-[#B2E9FC] font-medium flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#00BAF2] animate-ping" />
+                Live WhatsApp & ReAct Simulation
+              </span>
+            </div>
+            <h2 className="text-base font-bold text-white tracking-tight">
+              Watch NEXA Autonomously Onboard Raju General Store on WhatsApp
+            </h2>
+            <p className="text-xs text-[#E0EDFB] leading-relaxed">
+              Experience the autonomous ReAct loop: reading documents from camera photos, overcoming objections in Hinglish, recommending the Soundbox, and pushing pre-verified applications into this dashboard.
+            </p>
+          </div>
+          <button
+            onClick={() => navigate('/agent-demo')}
+            className="flex-shrink-0 px-4 py-2 bg-[#00BAF2] hover:bg-[#00a8dc] text-[#002970] text-xs font-bold rounded-lg shadow-sm flex items-center gap-2 transition-all hover:scale-[1.02] active:scale-95 cursor-pointer"
+          >
+            <span>Launch Agent Simulator</span>
+            <ArrowRight className="w-4 h-4 text-[#002970]" />
+          </button>
+        </div>
       </div>
 
       {/* Demo Notice */}

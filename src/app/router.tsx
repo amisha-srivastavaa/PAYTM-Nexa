@@ -8,6 +8,7 @@ import { ApplicationList, ApplicationDetail } from '@/pages/Applications';
 import { RecommendationsPage } from '@/pages/Recommendations';
 import { FollowUps } from '@/pages/FollowUps';
 import { RoutePlanner } from '@/pages/RoutePlanner';
+import { AgentDemo } from '@/pages/AgentDemo';
 
 function NotFound() {
   return (
@@ -23,6 +24,7 @@ export function Router() {
     <AppLayout>
       <Routes>
         <Route path="/" element={<Dashboard />} />
+        <Route path="/agent-demo" element={<AgentDemo />} />
         <Route path="/merchants" element={<MerchantList />} />
         <Route path="/merchants/:id" element={<MerchantDetail />} />
         <Route path="/merchants/:id/edit" element={<MerchantProfiler />} />
