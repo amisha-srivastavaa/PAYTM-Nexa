@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Bell, User, ChevronDown, RotateCcw, Info, X, Sparkles } from 'lucide-react';
+import { Search, Bell, ChevronDown, RotateCcw, Info, X, Moon, Sun, Wifi, WifiOff, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getMerchants, resetDemoStore } from '@/lib/store';
+import { Brand } from '@/components/ui/Brand';
 
 interface TopbarProps {
   title: string;
@@ -15,6 +16,36 @@ export function Topbar({ title }: TopbarProps) {
   const [showDropdown, setShowDropdown] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
   const [showAbout, setShowAbout] = useState(false);
+  const [demoMode, setDemoMode] = useState(() => localStorage.getItem('nexa-demo-mode') === 'true');
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => localStorage.getItem('nexa-theme') === 'dark' ? 'dark' : 'light');
+  const [online, setOnline] = useState(() => navigator.onLine);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    localStorage.setItem('nexa-theme', theme);
+  }, [theme]);
+
+  useEffect(() => {
+    const updateOnline = () => setOnline(navigator.onLine);
+    window.addEventListener('online', updateOnline);
+    window.addEventListener('offline', updateOnline);
+    return () => {
+      window.removeEventListener('online', updateOnline);
+      window.removeEventListener('offline', updateOnline);
+    };
+  }, []);
+
+  const toggleDemoMode = () => {
+    if (demoMode) {
+      localStorage.removeItem('nexa-demo-mode');
+      setDemoMode(false);
+      return;
+    }
+    resetDemoStore();
+    localStorage.setItem('nexa-demo-mode', 'true');
+    setDemoMode(true);
+    navigate('/merchants/m-001/edit?demo=1');
+  };
 
   const handleSearch = (q: string) => {
     setQuery(q);
@@ -47,26 +78,27 @@ export function Topbar({ title }: TopbarProps) {
 
   return (
     <>
-      <header className="h-12 flex-shrink-0 bg-white border-b border-[#E4EAF2] flex items-center px-4 gap-3 z-20" role="banner">
-        {/* Page Title / Breadcrumb Context */}
-        <div className="flex items-center gap-2 min-w-[140px]">
-          <span className="text-xs font-semibold text-[#172B4D]">{title}</span>
+      <header className="min-h-14 flex-shrink-0 bg-white border-b border-[#D8ECF8] flex items-center px-3 sm:px-5 gap-3 z-20" role="banner">
+        {/* Page Title Context */}
+        <div className="flex items-center gap-3 min-w-0 md:min-w-[150px]">
+          <span className="md:hidden"><Brand compact linked /></span>
+          <span className="hidden md:inline text-sm font-display font-bold text-[#09254b] tracking-tight">{title}</span>
         </div>
 
-        {/* Global Merchant Search */}
-        <div className="relative flex-1 max-w-sm">
+        {/* Global Merchant Search with Paytm light-blue glow */}
+        <div className="relative flex-1 max-w-sm hidden sm:block">
           <div className="relative">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#98A2B3]" aria-hidden />
+            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#00BAF2]" aria-hidden />
             <input
               type="search"
-              placeholder="Search merchants by name, owner, or city…"
+              placeholder="Search merchants by store, owner, mobile, or city…"
               value={query}
               onChange={e => handleSearch(e.target.value)}
               onFocus={() => query && setShowDropdown(true)}
               onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
               className={cn(
-                'w-full h-7.5 pl-8 pr-3 text-xs border border-[#E4EAF2] rounded bg-[#F8F9FC] text-[#172B4D] placeholder:text-[#98A2B3]',
-                'focus:outline-none focus:ring-1.5 focus:ring-[#00BAF2] focus:border-[#00BAF2] focus:bg-white transition-colors',
+                'w-full h-8 pl-8 pr-3 text-xs border border-[#D8ECF8] rounded bg-[#F2F8FD] text-[#172B4D] placeholder:text-[#8993A4]',
+                'focus:outline-none focus:ring-2 focus:ring-[#00BAF2]/30 focus:border-[#00BAF2] focus:bg-white transition-all',
               )}
               aria-label="Search merchants"
               aria-autocomplete="list"
@@ -74,19 +106,19 @@ export function Topbar({ title }: TopbarProps) {
             />
           </div>
           {results.length > 0 && showDropdown !== false && (
-            <div className="absolute top-full mt-1 left-0 right-0 bg-white border border-[#E4EAF2] rounded-md shadow-md z-50 py-1" role="listbox">
+            <div className="absolute top-full mt-1.5 left-0 right-0 bg-white border border-[#D8ECF8] rounded-md shadow-paytm-md z-50 py-1" role="listbox">
               {results.map(r => (
                 <button
                   key={r.id}
                   role="option"
-                  className="w-full px-3 py-1.5 text-left hover:bg-[#F5F8FC] flex items-center justify-between transition-colors"
+                  className="w-full px-3 py-2 text-left hover:bg-[#F0F8FD] flex items-center justify-between transition-colors border-b border-[#EBF4FA] last:border-0"
                   onClick={() => handleSelect(r.id)}
                 >
                   <div className="truncate pr-2">
-                    <p className="font-medium text-[#172B4D] text-xs truncate">{r.businessName}</p>
-                    <p className="text-[10px] text-[#667085]">{r.city}</p>
+                    <p className="font-semibold text-[#002970] text-xs truncate">{r.businessName}</p>
+                    <p className="text-[10px] text-[#5E6C84]">{r.city}</p>
                   </div>
-                  <span className="text-[10px] text-[#007FA5] bg-[#EBF9FE] px-1.5 py-0.5 rounded capitalize flex-shrink-0">
+                  <span className="text-[10px] font-semibold text-[#007FA5] bg-[#E1F4FD] border border-[#BAE7F8] px-1.5 py-0.5 rounded capitalize flex-shrink-0">
                     {r.status.replace('_', ' ')}
                   </span>
                 </button>
@@ -96,39 +128,65 @@ export function Topbar({ title }: TopbarProps) {
         </div>
 
         {/* Right Actions */}
-        <div className="ml-auto flex items-center gap-2">
-          {/* Autonomous Agent Demo CTA */}
+        <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#D8ECF8] bg-[#F7FCFE] px-2 sm:px-2.5 min-h-9 text-[10px] font-semibold text-[#007FA5]" aria-live="polite">
+            {online ? <Wifi className="h-3.5 w-3.5" aria-hidden="true" /> : <WifiOff className="h-3.5 w-3.5" aria-hidden="true" />}
+            <span>{online ? 'Offline-ready' : 'Offline mode'}</span>
+            <span className={cn('h-2 w-2 rounded-full', online ? 'bg-emerald-500' : 'bg-amber-500')} aria-hidden="true" />
+          </span>
+
           <button
             onClick={() => navigate('/agent-demo')}
-            className="h-7 px-2.5 flex items-center gap-1.5 text-xs font-semibold text-[#002970] bg-[#EBF9FE] hover:bg-[#D5F3FD] border border-[#B2E9FC] rounded-md transition-all shadow-2xs group"
+            aria-label="Open AI Teammate Demo"
+            className="touch-target inline-flex items-center gap-1.5 rounded-full border border-[#BAE7F8] bg-[#EBF9FE] px-2.5 text-xs font-semibold text-[#002970] transition-all hover:bg-[#D5F3FD] sm:min-h-9"
           >
-            <Sparkles className="w-3.5 h-3.5 text-[#00BAF2] group-hover:rotate-12 transition-transform" />
+            <Sparkles className="h-3.5 w-3.5 text-[#00BAF2]" />
             <span className="hidden sm:inline font-bold">AI Teammate Demo</span>
-            <span className="w-1.5 h-1.5 rounded-full bg-[#16845B] animate-pulse" />
+            <span className="h-1.5 w-1.5 rounded-full bg-[#16845B] animate-pulse" aria-hidden="true" />
           </button>
 
-          {/* Environment Tag */}
-          <span className="hidden lg:inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[10px] font-medium text-[#667085] bg-[#F8F9FC] border border-[#E4EAF2]">
+          <span className="hidden lg:inline-flex items-center gap-1.5 rounded-full border border-[#D8ECF8] bg-[#F7FCFE] px-2.5 py-1 text-[10px] font-semibold text-[#52677d]">
             <span className="w-1.5 h-1.5 rounded-full bg-[#16845B]" />
-            Field Operations
+            Field operations
           </span>
+
+          <button
+            type="button"
+            onClick={toggleDemoMode}
+            aria-pressed={demoMode}
+            aria-label={demoMode ? 'Turn demo mode off' : 'Turn demo mode on and load sample merchant'}
+            className={cn('touch-target inline-flex items-center justify-center gap-1.5 rounded-full border px-2.5 text-[11px] font-bold', demoMode ? 'border-[#00BAF2] bg-[#E1F4FD] text-[#007FA5]' : 'border-[#D8ECF8] bg-white text-[#52677d] hover:bg-[#F7FCFE]')}
+          >
+            <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
+            <span className="hidden sm:inline">Demo mode</span>
+            <span className="sm:hidden">Demo</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setTheme(current => current === 'light' ? 'dark' : 'light')}
+            aria-label={`Switch to ${theme === 'light' ? 'dark' : 'light'} theme`}
+            className="touch-target inline-flex w-10 items-center justify-center rounded-full border border-[#D8ECF8] bg-white text-[#52677d] hover:bg-[#F7FCFE]"
+          >
+            {theme === 'light' ? <Moon className="h-4 w-4" aria-hidden="true" /> : <Sun className="h-4 w-4" aria-hidden="true" />}
+          </button>
 
           {/* Reset Demo Data */}
           <button
             onClick={handleReset}
             title="Reset demo data to initial state"
-            className="h-7 px-2 flex items-center gap-1.5 text-xs text-[#667085] hover:text-[#172B4D] hover:bg-[#F5F8FC] border border-[#E4EAF2] rounded transition-colors"
+            className="hidden md:flex h-9 px-2.5 items-center gap-1.5 text-xs text-[#007FA5] hover:text-[#002970] hover:bg-[#E1F4FD] border border-[#D8ECF8] bg-[#F7FCFE] rounded transition-colors"
           >
-            <RotateCcw className="w-3 h-3 text-[#667085]" />
-            <span className="hidden md:inline text-[11px] font-medium">Reset Demo</span>
+            <RotateCcw className="w-3 h-3 text-[#00BAF2]" />
+            <span className="hidden md:inline text-[11px] font-semibold">Reset Demo</span>
           </button>
 
           {/* Notifications button */}
           <button
-            className="relative w-7 h-7 flex items-center justify-center text-[#667085] hover:text-[#172B4D] hover:bg-[#F5F8FC] rounded transition-colors"
+            className="relative hidden sm:flex w-9 h-9 items-center justify-center text-[#5E6C84] hover:text-[#002970] hover:bg-[#E1F4FD] rounded transition-colors"
             aria-label="Notifications"
           >
-            <Bell className="w-3.5 h-3.5" />
+            <Bell className="w-3.5 h-3.5 text-[#00BAF2]" />
             <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 rounded-full bg-[#00BAF2]" aria-label="Unread updates" />
           </button>
 
@@ -136,26 +194,26 @@ export function Topbar({ title }: TopbarProps) {
           <div className="relative">
             <button
               onClick={() => setShowProfile(!showProfile)}
-              className="flex items-center gap-1.5 h-7 pl-1.5 pr-2 rounded hover:bg-[#F5F8FC] transition-colors border border-transparent hover:border-[#E4EAF2]"
+              className="flex items-center gap-1.5 h-7 pl-1.5 pr-2 rounded hover:bg-[#E1F4FD] transition-colors border border-transparent hover:border-[#D8ECF8]"
               aria-expanded={showProfile}
               aria-haspopup="menu"
             >
-              <div className="w-5.5 h-5.5 rounded bg-[#002970] flex items-center justify-center text-white text-[10px] font-bold">
+              <div className="w-6 h-6 rounded-md bg-gradient-to-br from-[#00BAF2] to-[#008ECC] flex items-center justify-center text-white text-[10px] font-bold shadow-2xs">
                 AS
               </div>
-              <span className="text-xs font-medium text-[#172B4D] hidden md:inline">Arjun S.</span>
-              <ChevronDown className="w-3 h-3 text-[#667085]" />
+              <span className="text-xs font-semibold text-[#002970] hidden md:inline">Arjun S.</span>
+              <ChevronDown className="w-3 h-3 text-[#5E6C84]" />
             </button>
             {showProfile && (
-              <div className="absolute right-0 top-full mt-1 w-52 bg-white border border-[#E4EAF2] rounded-md shadow-md z-50 py-1" role="menu">
-                <div className="px-3 py-2 border-b border-[#E4EAF2] bg-[#FAFCFE]">
-                  <p className="text-xs font-semibold text-[#172B4D]">Arjun Sharma</p>
-                  <p className="text-[11px] text-[#667085]">Field Sales Executive</p>
-                  <p className="text-[10px] text-[#002970] font-medium mt-0.5">Bengaluru Central Territory</p>
+              <div className="absolute right-0 top-full mt-1.5 w-52 bg-white border border-[#D8ECF8] rounded-md shadow-paytm-md z-50 py-1" role="menu">
+                <div className="px-3.5 py-2.5 border-b border-[#D8ECF8] bg-[#F7FCFE]">
+                  <p className="text-xs font-bold text-[#002970]">Arjun Sharma</p>
+                  <p className="text-[11px] text-[#5E6C84]">Paytm Field Sales Executive</p>
+                  <p className="text-[10px] text-[#00BAF2] font-semibold mt-0.5">Bengaluru Central Territory</p>
                 </div>
                 <button
                   onClick={() => { setShowAbout(true); setShowProfile(false); }}
-                  className="w-full text-left px-3 py-1.5 text-xs text-[#172B4D] hover:bg-[#F5F8FC] flex items-center gap-2"
+                  className="w-full text-left px-3.5 py-2 text-xs text-[#172B4D] hover:bg-[#F0F8FD] flex items-center gap-2"
                   role="menuitem"
                 >
                   <Info className="w-3.5 h-3.5 text-[#00BAF2]" />
@@ -163,7 +221,7 @@ export function Topbar({ title }: TopbarProps) {
                 </button>
                 <button
                   onClick={() => { handleReset(); setShowProfile(false); }}
-                  className="w-full text-left px-3 py-1.5 text-xs text-[#D92D20] hover:bg-[#FEF3F2] flex items-center gap-2"
+                  className="w-full text-left px-3.5 py-2 text-xs text-[#D92D20] hover:bg-[#FEF3F2] flex items-center gap-2"
                   role="menuitem"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -178,36 +236,36 @@ export function Topbar({ title }: TopbarProps) {
       {/* About NEXA Modal */}
       {showAbout && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-          <div className="bg-white rounded-lg border border-[#E4EAF2] shadow-lg max-w-md w-full p-5 space-y-4">
+          <div className="bg-white rounded-lg border border-[#D8ECF8] shadow-paytm-md max-w-md w-full p-5 space-y-4">
             <div className="flex items-start justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded bg-[#002970] flex items-center justify-center text-white">
+                <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-[#00BAF2] to-[#008ECC] flex items-center justify-center text-white shadow-paytm">
                   <svg viewBox="0 0 28 28" className="w-5 h-5" fill="none">
-                    <path d="M6 21V7l8 14h8V7h-4v14L10 7H6z" fill="#00BAF2" />
-                    <circle cx="21" cy="7" r="2.5" fill="#FFFFFF" />
+                    <path d="M6 21V7l8 14h8V7h-4v14L10 7H6z" fill="#FFFFFF" />
+                    <circle cx="21" cy="7" r="2.5" fill="#002970" />
                   </svg>
                 </div>
                 <div>
                   <h3 className="text-sm font-bold text-[#002970]">NEXA — Paytm Field Sales Platform</h3>
-                  <p className="text-xs text-[#667085]">Merchant Onboarding Co-Pilot</p>
+                  <p className="text-xs text-[#007FA5]">Paytm Merchant Acquisition Co-Pilot</p>
                 </div>
               </div>
-              <button onClick={() => setShowAbout(false)} className="text-[#667085] hover:text-[#172B4D]">
+              <button onClick={() => setShowAbout(false)} className="text-[#5E6C84] hover:text-[#002970]">
                 <X className="w-4 h-4" />
               </button>
             </div>
             <p className="text-xs text-[#344054] leading-relaxed">
               NEXA is an AI-powered field sales co-pilot designed for Paytm Field Sales Executives (FSEs). It streamlines merchant profiling, document extraction, payment-device matching, and onboarding readiness.
             </p>
-            <div className="rounded bg-[#F8F9FC] border border-[#E4EAF2] p-3 text-[11px] text-[#667085] space-y-1">
-              <p><strong className="text-[#172B4D]">Context:</strong> Paytm Hackathon Submission Prototype</p>
-              <p><strong className="text-[#172B4D]">Mode:</strong> Demo seed data with explainable recommendation rules</p>
-              <p><strong className="text-[#172B4D]">Notice:</strong> Simulated field operations interface; not connected to live banking APIs.</p>
+            <div className="rounded bg-[#F0F8FD] border border-[#BAE7F8] p-3 text-[11px] text-[#005B7A] space-y-1">
+              <p><strong className="text-[#002970]">Context:</strong> Paytm Hackathon Submission Prototype</p>
+              <p><strong className="text-[#002970]">Palette:</strong> Paytm Signature Light Blue (#00BAF2) & Deep Navy (#002970)</p>
+              <p><strong className="text-[#002970]">Notice:</strong> Simulated field operations interface; not connected to live banking APIs.</p>
             </div>
             <div className="flex justify-end pt-2">
               <button
                 onClick={() => setShowAbout(false)}
-                className="px-3.5 py-1.5 text-xs font-medium bg-[#002970] text-white rounded hover:bg-[#001f56]"
+                className="px-4 py-1.5 text-xs font-semibold bg-[#00BAF2] text-white rounded hover:bg-[#00a4d6] shadow-xs"
               >
                 Close
               </button>

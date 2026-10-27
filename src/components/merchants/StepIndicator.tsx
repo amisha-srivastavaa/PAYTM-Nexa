@@ -40,39 +40,39 @@ export function StepIndicator({ current, completed, onNavigate }: StepIndicatorP
               disabled={!isAccessible}
               aria-current={isActive ? 'step' : undefined}
               className={cn(
-                'group flex flex-col sm:flex-row items-center sm:items-start gap-2 p-2 rounded-md border text-left transition-all',
+                'group flex flex-col sm:flex-row items-center sm:items-start gap-2 p-2 rounded-lg border text-left transition-all',
                 isActive
-                  ? 'bg-white border-[#00BAF2] shadow-xs'
+                  ? 'bg-white border-[#00BAF2] shadow-paytm ring-1 ring-[#00BAF2]/30'
                   : isDone
-                  ? 'bg-white border-[#E4EAF2] hover:border-[#16845B]'
-                  : 'bg-[#FAFCFE] border-[#E4EAF2] opacity-70 cursor-not-allowed',
+                  ? 'bg-white border-[#D8ECF8] hover:border-[#00BAF2]'
+                  : 'bg-[#F7FCFE] border-[#D8ECF8] opacity-70 cursor-not-allowed',
               )}
             >
-              {/* Step circle / indicator */}
+              {/* Step circle with Paytm Light Blue */}
               <div
                 className={cn(
-                  'w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 transition-colors',
+                  'w-6 h-6 rounded-full flex items-center justify-center text-[11px] font-bold flex-shrink-0 transition-colors',
                   isActive
-                    ? 'bg-[#002970] text-white ring-2 ring-[#00BAF2]/30'
+                    ? 'bg-[#00BAF2] text-white shadow-[0_2px_4px_rgba(0,186,242,0.35)] ring-2 ring-[#00BAF2]/25'
                     : isDone
-                    ? 'bg-[#ECFDF3] text-[#16845B] border border-[#A6F4C5]'
-                    : 'bg-[#F2F4F7] text-[#667085] border border-[#EAECF0]',
+                    ? 'bg-[#E1F4FD] text-[#007FA5] border border-[#BAE7F8]'
+                    : 'bg-[#F0F8FD] text-[#8993A4] border border-[#D8ECF8]',
                 )}
               >
-                {isDone ? <Check className="w-3 h-3 stroke-[2.5]" /> : step.id}
+                {isDone ? <Check className="w-3.5 h-3.5 stroke-[2.5]" /> : step.id}
               </div>
 
               {/* Step text labels */}
               <div className="min-w-0 flex-1 text-center sm:text-left">
                 <p
                   className={cn(
-                    'text-[11px] font-semibold truncate leading-tight',
-                    isActive ? 'text-[#002970]' : isDone ? 'text-[#172B4D]' : 'text-[#667085]',
+                    'text-[11px] font-bold truncate leading-tight',
+                    isActive ? 'text-[#002970]' : isDone ? 'text-[#007FA5]' : 'text-[#8993A4]',
                   )}
                 >
                   {step.label}
                 </p>
-                <p className="text-[10px] text-[#667085] truncate hidden md:block mt-0.5 leading-none">
+                <p className="text-[10px] text-[#5E6C84] truncate hidden md:block mt-0.5 leading-none">
                   {step.sublabel}
                 </p>
               </div>

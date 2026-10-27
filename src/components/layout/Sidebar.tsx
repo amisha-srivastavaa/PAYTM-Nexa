@@ -13,6 +13,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { Brand } from '@/components/ui/Brand';
 
 interface NavItem {
   to: string;
@@ -37,29 +38,15 @@ export function Sidebar() {
   let currentGroup = '';
 
   return (
-    <aside className="w-56 flex-shrink-0 bg-white border-r border-[#E4EAF2] flex flex-col select-none" aria-label="Main navigation">
+    <aside className="hidden md:flex w-60 flex-shrink-0 bg-white border-r border-[#D8ECF8] flex-col select-none" aria-label="Main navigation">
       {/* Brand Header */}
-      <div className="px-4 py-3.5 border-b border-[#E4EAF2]">
-        <div className="flex items-center gap-2.5">
-          {/* Geometric NEXA Brand Mark */}
-          <div className="relative w-7 h-7 rounded-md bg-[#002970] flex items-center justify-center flex-shrink-0 shadow-xs overflow-hidden">
-            <svg viewBox="0 0 28 28" className="w-5 h-5" fill="none">
-              <path d="M6 21V7l8 14h8V7h-4v14L10 7H6z" fill="#00BAF2" />
-              <circle cx="21" cy="7" r="2.5" fill="#FFFFFF" />
-            </svg>
-          </div>
-          <div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-sm font-bold text-[#002970] tracking-tight">NEXA</span>
-              <span className="text-[10px] font-semibold text-[#00BAF2] bg-[#EBF9FE] px-1 py-0.2 rounded border border-[#B2E9FC]">FSE</span>
-            </div>
-            <p className="text-[10px] font-medium text-[#667085] leading-tight">Merchant Operations</p>
-          </div>
-        </div>
+      <div className="px-4 py-3.5 border-b border-[#D8ECF8] bg-[#F7FCFE]">
+        <Brand linked />
+        <p className="pl-11 pt-1 text-[10px] font-medium uppercase tracking-[0.12em] text-[#71859A]">Field sales workspace</p>
       </div>
 
       {/* Navigation Links */}
-      <nav className="flex-1 overflow-y-auto py-2.5 px-2 space-y-0.5" aria-label="Application sections">
+      <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-0.5" aria-label="Application sections">
         {NAV_ITEMS.map((item) => {
           const showGroup = item.group && item.group !== currentGroup;
           if (showGroup) currentGroup = item.group!;
@@ -71,7 +58,7 @@ export function Sidebar() {
           return (
             <div key={item.to}>
               {showGroup && (
-                <p className="px-2.5 pt-3 pb-1 text-[10px] font-semibold text-[#98A2B3] uppercase tracking-wider">
+                <p className="px-2.5 pt-3 pb-1 text-[10px] font-bold text-[#8993A4] uppercase tracking-wider">
                   {item.group}
                 </p>
               )}
@@ -80,16 +67,16 @@ export function Sidebar() {
                 className={cn(
                   'flex items-center gap-2.5 px-2.5 py-1.5 rounded-md text-xs transition-all group relative',
                   isActive
-                    ? 'bg-[#EBF9FE] text-[#002970] font-semibold border-l-2 border-[#00BAF2] pl-2'
-                    : 'text-[#667085] hover:bg-[#F5F8FC] hover:text-[#172B4D]',
+                    ? 'bg-[#E1F4FD] text-[#002970] font-bold border-l-3 border-[#00BAF2] pl-2 shadow-2xs'
+                    : 'text-[#5E6C84] hover:bg-[#F0F8FD] hover:text-[#007FA5]',
                 )}
                 aria-current={isActive ? 'page' : undefined}
               >
-                <span className={cn('flex-shrink-0 transition-colors', isActive ? 'text-[#00BAF2]' : 'text-[#667085] group-hover:text-[#172B4D]')}>
+                <span className={cn('flex-shrink-0 transition-colors', isActive ? 'text-[#00BAF2]' : 'text-[#8993A4] group-hover:text-[#00BAF2]')}>
                   {item.icon}
                 </span>
                 <span className="flex-1 truncate">{item.label}</span>
-                {isActive && <ChevronRight className="w-3 h-3 text-[#00BAF2] flex-shrink-0" />}
+                {isActive && <ChevronRight className="w-3.5 h-3.5 text-[#00BAF2] flex-shrink-0 stroke-[2.5]" />}
               </NavLink>
             </div>
           );
@@ -97,12 +84,12 @@ export function Sidebar() {
       </nav>
 
       {/* Bottom Environment Indicator */}
-      <div className="p-3 border-t border-[#E4EAF2] bg-[#FAFCFE]">
-        <div className="flex items-center gap-2 px-2 py-1.5 rounded bg-white border border-[#E4EAF2]">
+      <div className="p-3 border-t border-[#D8ECF8] bg-[#F7FCFE]">
+        <div className="flex items-center gap-2 px-2.5 py-2 rounded bg-white border border-[#D8ECF8] shadow-2xs">
           <span className="w-2 h-2 rounded-full bg-[#00BAF2] animate-pulse flex-shrink-0" />
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] font-semibold text-[#172B4D] truncate">Prototype Environment</p>
-            <p className="text-[10px] text-[#667085] truncate">Demo Mode · Seed Data</p>
+            <p className="text-[11px] font-bold text-[#002970] truncate">NEXA demo workspace</p>
+            <p className="text-[10px] text-[#5E6C84] truncate">Local field workflow</p>
           </div>
         </div>
       </div>

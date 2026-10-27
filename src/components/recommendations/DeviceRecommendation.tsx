@@ -48,7 +48,7 @@ function SetupCard({
             </div>
             <h3 className="text-xs font-bold text-[#172B4D] truncate">{setup.label}</h3>
             {isPrimary ? (
-              <span className="text-[10px] font-semibold text-[#002970] bg-[#EDF3FB] border border-[#D0E1F9] px-1.5 py-0.2 rounded">
+              <span className="text-[10px] font-semibold text-[#87540e] bg-[#fff2dc] border border-[#f3d39f] px-1.5 py-0.2 rounded">
                 AI Match
               </span>
             ) : (
@@ -114,35 +114,50 @@ export function DeviceRecommendation({ merchant, onConfirmed }: DeviceRecommenda
     onConfirmed(finalRec);
   };
 
-  const primaryReason = rec.reasons.length > 0 ? rec.reasons.join('. ') : 'Optimized for business volume and counter space.';
+  const estimatedTicketSize = merchant.estimatedMonthlyVolume && merchant.estimatedTransactionsPerDay
+    ? Math.round(merchant.estimatedMonthlyVolume / (merchant.estimatedTransactionsPerDay * 30))
+    : undefined;
 
   return (
     <div className="space-y-4">
       {/* Explainable AI Reasoning Banner */}
       <div className="bg-white border border-[#E4EAF2] rounded-lg p-4 shadow-xs">
         <div className="flex items-start gap-3">
-          <div className="w-8 h-8 rounded-md bg-[#EDF3FB] text-[#002970] flex items-center justify-center flex-shrink-0">
+          <div className="w-8 h-8 rounded-md bg-[#fff2dc] text-[#87540e] flex items-center justify-center flex-shrink-0">
             <Sparkles className="w-4 h-4 text-[#00BAF2]" />
           </div>
           <div>
             <div className="flex items-center gap-2">
               <h2 className="text-xs font-bold text-[#172B4D] uppercase tracking-wide">
-                NEXA Hardware Recommendation Engine
+                Why this device
               </h2>
-              <span className="text-[10px] font-semibold text-[#007FA5] bg-[#EBF9FE] border border-[#B2E9FC] px-1.5 py-0.2 rounded">
+              <span className="text-[10px] font-semibold text-[#87540e] bg-[#fff2dc] border border-[#f3d39f] px-1.5 py-0.2 rounded">
                 Rule-Based AI
               </span>
             </div>
-            <p className="text-xs text-[#172B4D] mt-1 font-medium">
-              {primaryReason}
-            </p>
-            <div className="flex flex-wrap items-center gap-2 mt-2 text-[11px] text-[#667085]">
-              <span>Category: <strong className="text-[#172B4D] capitalize">{merchant.businessType}</strong></span>
-              <span>•</span>
-              <span>Audio Alert: <strong className="text-[#172B4D]">{merchant.needsAudibleConfirmation ? 'Required' : 'Optional'}</strong></span>
-              <span>•</span>
-              <span>Matching Ruleset: <strong className="text-[#16845B]">v{rec.rulesetVersion}</strong></span>
+            <ul className="mt-2 space-y-1 text-xs text-[#52677d]">
+              {rec.reasons.map(reason => (
+                <li key={reason} className="flex items-start gap-2">
+                  <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#16845B]" aria-hidden="true" />
+                  <span>{reason}</span>
+                </li>
+              ))}
+            </ul>
+            <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-3">
+              <div className="rounded-lg bg-[#F7FCFE] p-2">
+                <p className="text-[9px] font-semibold uppercase tracking-wide text-[#71859A]">Business type</p>
+                <p className="text-[11px] font-bold capitalize text-[#09254b]">{merchant.businessType}</p>
+              </div>
+              <div className="rounded-lg bg-[#F7FCFE] p-2">
+                <p className="text-[9px] font-semibold uppercase tracking-wide text-[#71859A]">Daily footfall</p>
+                <p className="text-[11px] font-bold text-[#09254b]">{merchant.estimatedTransactionsPerDay ?? 'Not provided'} transactions</p>
+              </div>
+              <div className="rounded-lg bg-[#F7FCFE] p-2">
+                <p className="text-[9px] font-semibold uppercase tracking-wide text-[#71859A]">Est. ticket size</p>
+                <p className="text-[11px] font-bold text-[#09254b]">{estimatedTicketSize ? `₹${estimatedTicketSize}` : 'Not provided'}</p>
+              </div>
             </div>
+            <p className="mt-2 text-[10px] text-[#71859A]">Ruleset v{rec.rulesetVersion} · illustrative demo recommendation</p>
           </div>
         </div>
       </div>
@@ -171,7 +186,7 @@ export function DeviceRecommendation({ merchant, onConfirmed }: DeviceRecommenda
       </DemoNotice>
 
       {/* Bottom Confirmation Action */}
-      <div className="bg-white border border-[#E4EAF2] rounded-lg p-3.5 flex items-center justify-between shadow-xs">
+      <div className="sticky bottom-16 z-10 bg-white border border-[#E4EAF2] rounded-lg p-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-xs md:bottom-0">
         <div>
           <p className="text-xs font-semibold text-[#172B4D]">
             Selected: {chosenSetup.label}

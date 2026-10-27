@@ -132,7 +132,7 @@ export function ValidationSummary({ merchant, onValid }: ValidationSummaryProps)
       </div>
 
       {/* Action to proceed */}
-      <div className="bg-white border border-[#E4EAF2] rounded-lg p-3.5 flex items-center justify-between shadow-xs">
+      <div className="sticky bottom-16 z-10 bg-white border border-[#E4EAF2] rounded-lg p-3.5 flex flex-col gap-2 shadow-xs sm:flex-row sm:items-center sm:justify-between md:bottom-0">
         <span className="text-xs text-[#667085]">
           {canProceed
             ? 'Validation verified. Proceed to configure payment hardware recommendation.'

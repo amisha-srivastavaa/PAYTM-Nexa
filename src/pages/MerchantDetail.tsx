@@ -190,6 +190,61 @@ export function MerchantDetail() {
           </div>
         </div>
       </div>
+
+      <section className="bg-white border border-[#E4EAF2] rounded-xl shadow-xs overflow-hidden" aria-labelledby="document-trace-title">
+        <div className="px-4 py-3 border-b border-[#E4EAF2] bg-[#FAFCFE]">
+          <h2 id="document-trace-title" className="text-sm font-bold text-[#09254b]">AI document & correction trail</h2>
+          <p className="mt-0.5 text-xs text-[#667085]">Source documents, extracted values, and any field-agent corrections.</p>
+        </div>
+        {docs.length ? (
+          <div className="divide-y divide-[#E4EAF2]">
+            {docs.map(doc => (
+              <details key={doc.id} className="group p-4" open={Boolean(doc.auditTrail?.length)}>
+                <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-3 [&::-webkit-details-marker]:hidden">
+                  <span className="min-w-0">
+                    <span className="block truncate text-xs font-bold text-[#09254b]">{doc.fileName}</span>
+                    <span className="block text-[10px] text-[#71859A]">{formatDateTime(doc.createdAt)} · {doc.extractionStatus}</span>
+                  </span>
+                  <span className="rounded-full bg-[#e9f7f8] px-2.5 py-1 text-[10px] font-semibold text-[#007FA5]">View trace</span>
+                </summary>
+                <div className="mt-3 grid gap-4 border-t border-[#E4EAF2] pt-3 md:grid-cols-2">
+                  <div>
+                    <h3 className="text-[11px] font-bold uppercase tracking-wide text-[#52677d]">AI read from source</h3>
+                    <ul className="mt-2 space-y-2">
+                      {Object.entries(doc.extractedFields).map(([fieldKey, field]) => (
+                        <li key={fieldKey} className="text-xs">
+                          <span className="font-semibold text-[#09254b]">{fieldKey}:</span> <span className="text-[#52677d]">{field.value || 'No value detected'}</span>
+                          {field.confidence !== undefined && <span className="ml-2 text-[10px] text-[#71859A]">{Math.round(field.confidence * 100)}% confidence</span>}
+                          {field.evidence && <span className="mt-0.5 block text-[10px] text-[#71859A]">{field.evidence}</span>}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <h3 className="text-[11px] font-bold uppercase tracking-wide text-[#52677d]">Agent corrections</h3>
+                    {doc.auditTrail?.length ? (
+                      <ul className="mt-2 space-y-2">
+                        {doc.auditTrail.map((entry, index) => (
+                          <li key={`${entry.fieldKey}-${index}`} className="rounded-lg bg-[#F7FCFE] p-2.5 text-xs text-[#52677d]">
+                            <span className="font-semibold capitalize text-[#09254b]">{entry.fieldKey}</span>: “{entry.sourceValue}” → “{entry.correctedValue}”
+                            <span className="mt-1 block text-[10px] text-[#71859A]">{entry.changedBy} · {formatDateTime(entry.changedAt)}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : <p className="mt-2 text-xs text-[#71859A]">No agent corrections recorded for this document.</p>}
+                  </div>
+                </div>
+              </details>
+            ))}
+          </div>
+        ) : (
+          <div className="p-6 text-center">
+            <FileText className="mx-auto h-7 w-7 text-[#00b8de]" aria-hidden="true" />
+            <p className="mt-2 text-xs font-semibold text-[#09254b]">No source documents yet</p>
+            <p className="mt-1 text-[11px] text-[#71859A]">Captured documents and correction history will show here.</p>
+          </div>
+        )}
+      </section>
     </div>
   );
 }

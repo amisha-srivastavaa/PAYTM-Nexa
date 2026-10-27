@@ -15,7 +15,7 @@ export function Input({ label, error, hint, required, leftElement, className, id
   return (
     <div className="flex flex-col gap-1">
       {label && (
-        <label htmlFor={inputId} className="text-xs font-medium text-[#172B4D] flex items-center justify-between">
+        <label htmlFor={inputId} className="text-xs font-semibold text-[#172B4D] flex items-center justify-between">
           <span>
             {label}
             {required && <span className="text-[#D92D20] ml-0.5" aria-hidden>*</span>}
@@ -24,18 +24,18 @@ export function Input({ label, error, hint, required, leftElement, className, id
       )}
       <div className="relative">
         {leftElement && (
-          <div className="absolute inset-y-0 left-0 flex items-center pl-2.5 text-[#667085] pointer-events-none">
+          <div className="absolute inset-y-0 left-0 flex items-center pl-2.5 text-[#00BAF2] pointer-events-none">
             {leftElement}
           </div>
         )}
         <input
           id={inputId}
           className={cn(
-            'w-full h-8 px-3 text-xs border rounded bg-white text-[#172B4D] placeholder:text-[#98A2B3] transition-colors',
-            'border-[#E4EAF2] hover:border-[#CBD5E1]',
-            'focus:outline-none focus:ring-1.5 focus:ring-[#00BAF2] focus:border-[#00BAF2]',
-            'disabled:bg-[#F5F8FC] disabled:text-[#98A2B3] disabled:cursor-not-allowed',
-            error ? 'border-[#D92D20] focus:ring-[#D92D20] focus:border-[#D92D20]' : '',
+            'w-full h-8 px-3 text-xs border rounded bg-white text-[#172B4D] placeholder:text-[#8993A4] transition-colors',
+            'border-[#D8ECF8] hover:border-[#BAE7F8]',
+            'focus:outline-none focus:ring-2 focus:ring-[#00BAF2]/30 focus:border-[#00BAF2]',
+            'disabled:bg-[#F0F8FD] disabled:text-[#8993A4] disabled:cursor-not-allowed',
+            error ? 'border-[#D92D20] focus:ring-[#D92D20]/30 focus:border-[#D92D20]' : '',
             leftElement && 'pl-8',
             className,
           )}
@@ -45,7 +45,7 @@ export function Input({ label, error, hint, required, leftElement, className, id
         />
       </div>
       {error && <p id={`${inputId}-error`} className="text-[11px] text-[#D92D20] font-medium mt-0.5" role="alert">{error}</p>}
-      {!error && hint && <p id={`${inputId}-hint`} className="text-[11px] text-[#667085] mt-0.5">{hint}</p>}
+      {!error && hint && <p id={`${inputId}-hint`} className="text-[11px] text-[#5E6C84] mt-0.5">{hint}</p>}
     </div>
   );
 }
@@ -65,7 +65,7 @@ export function Select({ label, error, hint, required, options, placeholder, cla
   return (
     <div className="flex flex-col gap-1">
       {label && (
-        <label htmlFor={selectId} className="text-xs font-medium text-[#172B4D]">
+        <label htmlFor={selectId} className="text-xs font-semibold text-[#172B4D]">
           {label}
           {required && <span className="text-[#D92D20] ml-0.5" aria-hidden>*</span>}
         </label>
@@ -74,9 +74,9 @@ export function Select({ label, error, hint, required, options, placeholder, cla
         id={selectId}
         className={cn(
           'w-full h-8 px-3 text-xs border rounded bg-white text-[#172B4D] transition-colors',
-          'border-[#E4EAF2] hover:border-[#CBD5E1]',
-          'focus:outline-none focus:ring-1.5 focus:ring-[#00BAF2] focus:border-[#00BAF2]',
-          'disabled:bg-[#F5F8FC] disabled:cursor-not-allowed',
+          'border-[#D8ECF8] hover:border-[#BAE7F8]',
+          'focus:outline-none focus:ring-2 focus:ring-[#00BAF2]/30 focus:border-[#00BAF2]',
+          'disabled:bg-[#F0F8FD] disabled:cursor-not-allowed',
           error ? 'border-[#D92D20]' : '',
           className,
         )}
@@ -89,7 +89,7 @@ export function Select({ label, error, hint, required, options, placeholder, cla
         ))}
       </select>
       {error && <p className="text-[11px] text-[#D92D20] font-medium mt-0.5" role="alert">{error}</p>}
-      {!error && hint && <p className="text-[11px] text-[#667085] mt-0.5">{hint}</p>}
+      {!error && hint && <p className="text-[11px] text-[#5E6C84] mt-0.5">{hint}</p>}
     </div>
   );
 }
@@ -107,7 +107,7 @@ export function Textarea({ label, error, hint, required, className, id, ...props
   return (
     <div className="flex flex-col gap-1">
       {label && (
-        <label htmlFor={textareaId} className="text-xs font-medium text-[#172B4D]">
+        <label htmlFor={textareaId} className="text-xs font-semibold text-[#172B4D]">
           {label}
           {required && <span className="text-[#D92D20] ml-0.5" aria-hidden>*</span>}
         </label>
@@ -115,9 +115,9 @@ export function Textarea({ label, error, hint, required, className, id, ...props
       <textarea
         id={textareaId}
         className={cn(
-          'w-full px-3 py-2 text-xs border rounded bg-white text-[#172B4D] placeholder:text-[#98A2B3] resize-none transition-colors',
-          'border-[#E4EAF2] hover:border-[#CBD5E1]',
-          'focus:outline-none focus:ring-1.5 focus:ring-[#00BAF2] focus:border-[#00BAF2]',
+          'w-full px-3 py-2 text-xs border rounded bg-white text-[#172B4D] placeholder:text-[#8993A4] resize-none transition-colors',
+          'border-[#D8ECF8] hover:border-[#BAE7F8]',
+          'focus:outline-none focus:ring-2 focus:ring-[#00BAF2]/30 focus:border-[#00BAF2]',
           error ? 'border-[#D92D20]' : '',
           className,
         )}
@@ -125,7 +125,7 @@ export function Textarea({ label, error, hint, required, className, id, ...props
         {...props}
       />
       {error && <p className="text-[11px] text-[#D92D20] font-medium mt-0.5" role="alert">{error}</p>}
-      {!error && hint && <p className="text-[11px] text-[#667085] mt-0.5">{hint}</p>}
+      {!error && hint && <p className="text-[11px] text-[#5E6C84] mt-0.5">{hint}</p>}
     </div>
   );
 }
@@ -148,11 +148,11 @@ export function Checkbox({ label, checked, onChange, description, id }: Checkbox
         type="checkbox"
         checked={checked}
         onChange={e => onChange(e.target.checked)}
-        className="mt-0.5 w-4 h-4 rounded border-[#D0D5DD] text-[#00BAF2] focus:ring-[#00BAF2]"
+        className="mt-0.5 w-4 h-4 rounded border-[#D8ECF8] text-[#00BAF2] focus:ring-[#00BAF2]"
       />
       <div>
-        <span className="text-xs font-medium text-[#172B4D] group-hover:text-[#002970]">{label}</span>
-        {description && <p className="text-[11px] text-[#667085] mt-0.5 leading-normal">{description}</p>}
+        <span className="text-xs font-semibold text-[#172B4D] group-hover:text-[#002970]">{label}</span>
+        {description && <p className="text-[11px] text-[#5E6C84] mt-0.5 leading-normal">{description}</p>}
       </div>
     </label>
   );

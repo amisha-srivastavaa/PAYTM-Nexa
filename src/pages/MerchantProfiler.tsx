@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { useNavigate, useParams, Link } from 'react-router-dom';
-import { ArrowLeft, ChevronRight, FileCheck, CheckCircle2 } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { useNavigate, useParams, Link, useSearchParams } from 'react-router-dom';
+import { ArrowLeft, ChevronRight, Clock3 } from 'lucide-react';
 import { getMerchantById, getApplicationByMerchant, getRecommendationByMerchant } from '@/lib/store';
 import { StepIndicator, type ProfilerStep } from '@/components/merchants/StepIndicator';
 import { MerchantDetailsForm } from '@/components/merchants/MerchantDetailsForm';
@@ -16,20 +16,65 @@ interface MerchantProfilerProps {
   isNew?: boolean;
 }
 
+function ReadinessRing({ value }: { value: number }) {
+  const radius = 22;
+  const circumference = 2 * Math.PI * radius;
+  const progress = Math.max(0, Math.min(value, 100));
+  return (
+    <div className="flex items-center gap-2.5 rounded-2xl border border-[#D8ECF8] bg-white px-3 py-2 shadow-sm" role="img" aria-label={`Merchant readiness ${progress}%`}>
+      <svg className="h-12 w-12 -rotate-90" viewBox="0 0 52 52" aria-hidden="true">
+        <circle cx="26" cy="26" r={radius} fill="none" stroke="var(--border)" strokeWidth="5" />
+        <circle
+          className="readiness-ring"
+          cx="26"
+          cy="26"
+          r={radius}
+          fill="none"
+          stroke={progress === 100 ? 'var(--success)' : 'var(--brand-cyan)'}
+          strokeWidth="5"
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          strokeDashoffset={circumference * (1 - progress / 100)}
+        />
+      </svg>
+      <div>
+        <p className="text-[10px] font-semibold uppercase tracking-[0.1em] text-[#71859A]">Readiness</p>
+        <p className="font-display text-lg font-bold leading-tight text-[#09254b]">{progress}%</p>
+      </div>
+    </div>
+  );
+}
+
 export function MerchantProfiler({ isNew = false }: MerchantProfilerProps) {
   const navigate = useNavigate();
   const { id } = useParams<{ id: string }>();
+  const [searchParams] = useSearchParams();
+  const demoJourney = searchParams.get('demo') === '1';
 
   const existing = id ? getMerchantById(id) : undefined;
   const existingApp = id ? getApplicationByMerchant(id) : undefined;
   const existingRec = id ? getRecommendationByMerchant(id) : undefined;
 
-  const [step, setStep] = useState<ProfilerStep>(1);
+  const [step, setStep] = useState<ProfilerStep>(() => demoJourney && existing ? 2 : 1);
   const [completed, setCompleted] = useState<Set<ProfilerStep>>(new Set(existing ? [1 as ProfilerStep] : []));
   const [merchant, setMerchant] = useState<Merchant | undefined>(existing);
   const [document, setDocument] = useState<MerchantDocument | undefined>();
   const [recommendation, setRecommendation] = useState<Recommendation | undefined>(existingRec);
   const [application, setApplication] = useState<MerchantApplication | undefined>(existingApp);
+  const startedAt = useRef(Date.now());
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => setElapsedSeconds(Math.floor((Date.now() - startedAt.current) / 1000)), 1000);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const previewUrl = document?.previewUrl;
+    return () => {
+      if (previewUrl?.startsWith('blob:')) URL.revokeObjectURL(previewUrl);
+    };
+  }, [document?.previewUrl]);
 
   const completeStep = (s: ProfilerStep) => {
     setCompleted(prev => new Set([...prev, s]));
@@ -49,6 +94,7 @@ export function MerchantProfiler({ isNew = false }: MerchantProfilerProps) {
 
   const handleExtractionConfirmed = (doc: MerchantDocument) => {
     setDocument(doc);
+    if (merchant) setMerchant(getMerchantById(merchant.id) ?? merchant);
     completeStep(3);
     setStep(4);
   };
@@ -69,8 +115,14 @@ export function MerchantProfiler({ isNew = false }: MerchantProfilerProps) {
     completeStep(5);
   };
 
+  const minutes = Math.floor(elapsedSeconds / 60);
+  const seconds = elapsedSeconds % 60;
+  const readiness = application?.readinessChecks.length
+    ? Math.round((application.readinessChecks.filter(check => check.passed).length / application.readinessChecks.length) * 100)
+    : merchant?.completeness ?? 0;
+
   return (
-    <div className="p-4 sm:p-6 max-w-5xl mx-auto space-y-4">
+    <div className="p-4 pb-8 sm:p-6 max-w-5xl mx-auto space-y-4">
       {/* Breadcrumb & Page Header */}
       <div>
         <div className="flex items-center gap-1.5 text-xs text-[#667085] mb-1">
@@ -82,17 +134,27 @@ export function MerchantProfiler({ isNew = false }: MerchantProfilerProps) {
         </div>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h1 className="text-base font-bold text-[#002970] tracking-tight">
-              {isNew ? 'Create Merchant Profile' : `Onboard: ${merchant?.businessName}`}
+            <h1 className="text-xl sm:text-2xl font-bold text-[#09254b] tracking-tight">
+              {isNew ? 'Capture a merchant' : `Onboard ${merchant?.businessName}`}
             </h1>
-            <p className="text-xs text-[#667085] mt-0.5">
-              Capture business details, verify KYC documents, and configure Paytm payment devices.
+            <p className="text-sm text-[#667085] mt-1">
+              {demoJourney ? 'A sample storefront is ready. Review its AI-read details, then finish the simulated flow.' : 'One quick profile, a document scan, and a clear next step.'}
             </p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <ReadinessRing value={readiness} />
+            <span className="flex items-center gap-1.5 rounded-full border border-[#D8ECF8] bg-white px-2.5 py-2 text-[10px] sm:text-xs font-semibold text-[#52677d]" aria-live="off">
+              <Clock3 className="h-3.5 w-3.5 text-[#00b8de]" />
+              {elapsedSeconds < 180
+                ? `Profile ready in ${Math.floor((180 - elapsedSeconds) / 60)}m ${String((180 - elapsedSeconds) % 60).padStart(2, '0')}s`
+                : `${minutes}:${String(seconds).padStart(2, '0')} elapsed`}
+            </span>
+            <span className="hidden lg:inline rounded-full bg-[#f4f8fb] px-3 py-2 text-[10px] font-semibold text-[#52677d]">
+              Manual 25 min <span className="text-[#00b8de]">→</span> NEXA 3 min
+            </span>
             <Button
               variant="outline"
-              size="xs"
+              size="sm"
               onClick={() => navigate(merchant ? `/merchants/${merchant.id}` : '/merchants')}
               leftIcon={<ArrowLeft className="w-3 h-3" />}
             >
@@ -133,14 +195,15 @@ export function MerchantProfiler({ isNew = false }: MerchantProfilerProps) {
                     Upload a shop signboard photo, GST certificate, or electricity bill to simulate OCR auto-fill.
                   </p>
                 </div>
-                <span className="text-[11px] font-medium text-[#007FA5] bg-[#EBF9FE] px-2 py-0.5 rounded border border-[#B2E9FC]">
-                  Simulated Vision AI
+                <span className="text-[11px] font-semibold text-[#87540e] bg-[#fff2dc] px-2 py-1 rounded-full border border-[#f3d39f]">
+                  AI extraction demo
                 </span>
               </div>
 
               <DocumentUpload
                 merchant={merchant}
                 onDocumentReady={handleDocumentReady}
+                demoMode={demoJourney}
               />
             </div>
 

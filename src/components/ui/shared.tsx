@@ -5,10 +5,10 @@ export function CompletenessBar({ value, className }: { value: number; className
   const color = value >= 90 ? 'bg-[#16845B]' : value >= 60 ? 'bg-[#00BAF2]' : 'bg-[#B76E00]';
   return (
     <div className={cn('flex items-center gap-2', className)}>
-      <div className="flex-1 h-1.5 bg-[#EAECF0] rounded-full overflow-hidden">
+      <div className="flex-1 h-2 bg-[#E1F3FD] rounded-full overflow-hidden">
         <div className={cn('h-full rounded-full transition-all duration-300', color)} style={{ width: `${value}%` }} />
       </div>
-      <span className="text-[11px] font-medium tabular-nums text-[#667085] w-8 text-right">{value}%</span>
+      <span className="text-[11px] font-bold tabular-nums text-[#002970] w-8 text-right">{value}%</span>
     </div>
   );
 }
@@ -35,11 +35,11 @@ interface EmptyStateProps {
 export function EmptyState({ icon, title, description, action }: EmptyStateProps) {
   return (
     <div className="flex flex-col items-center justify-center py-12 px-4 text-center">
-      <div className="w-10 h-10 rounded-full bg-[#EDF3FB] text-[#002970] flex items-center justify-center mb-3">
+      <div className="w-10 h-10 rounded-full bg-[#E5F5FD] text-[#00BAF2] border border-[#BAE7F8] flex items-center justify-center mb-3">
         {icon}
       </div>
-      <p className="text-xs font-semibold text-[#172B4D] mb-1">{title}</p>
-      {description && <p className="text-[11px] text-[#667085] max-w-xs mb-3.5">{description}</p>}
+      <p className="text-xs font-bold text-[#002970] mb-1">{title}</p>
+      {description && <p className="text-[11px] text-[#5E6C84] max-w-xs mb-3.5">{description}</p>}
       {action}
     </div>
   );
@@ -56,8 +56,8 @@ export function SectionHeader({ title, description, actions }: SectionHeaderProp
   return (
     <div className="flex items-start justify-between gap-4 mb-4">
       <div>
-        <h1 className="text-sm font-semibold text-[#172B4D]">{title}</h1>
-        {description && <p className="text-xs text-[#667085] mt-0.5">{description}</p>}
+        <h1 className="text-sm font-bold text-[#002970]">{title}</h1>
+        {description && <p className="text-xs text-[#5E6C84] mt-0.5">{description}</p>}
       </div>
       {actions && <div className="flex items-center gap-2 flex-shrink-0">{actions}</div>}
     </div>
@@ -67,7 +67,7 @@ export function SectionHeader({ title, description, actions }: SectionHeaderProp
 // ─── Card ──────────────────────────────────────────────────────────────────
 export function Card({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn('bg-white border border-[#E4EAF2] rounded-lg shadow-[0_1px_2px_rgba(16,24,40,0.04)]', className)}>
+    <div className={cn('bg-white border border-[#D8ECF8] rounded-lg shadow-[0_1px_3px_rgba(0,186,242,0.06)]', className)}>
       {children}
     </div>
   );
@@ -75,7 +75,7 @@ export function Card({ children, className }: { children: React.ReactNode; class
 
 export function CardHeader({ children, className }: { children: React.ReactNode; className?: string }) {
   return (
-    <div className={cn('px-4 py-3 border-b border-[#E4EAF2]', className)}>
+    <div className={cn('px-4 py-3 border-b border-[#D8ECF8] bg-[#F7FCFE]', className)}>
       {children}
     </div>
   );
@@ -87,15 +87,15 @@ export function CardBody({ children, className }: { children: React.ReactNode; c
 
 // ─── Divider ───────────────────────────────────────────────────────────────
 export function Divider({ className }: { className?: string }) {
-  return <hr className={cn('border-[#E4EAF2]', className)} />;
+  return <hr className={cn('border-[#D8ECF8]', className)} />;
 }
 
 // ─── InfoRow ───────────────────────────────────────────────────────────────
 export function InfoRow({ label, value, className }: { label: string; value?: React.ReactNode; className?: string }) {
   return (
     <div className={cn('flex items-start gap-3 py-1.5 text-xs', className)}>
-      <span className="text-[#667085] w-36 flex-shrink-0 font-medium">{label}</span>
-      <span className="text-[#172B4D] flex-1">{value ?? <span className="text-[#98A2B3] italic">—</span>}</span>
+      <span className="text-[#5E6C84] w-36 flex-shrink-0 font-medium">{label}</span>
+      <span className="text-[#172B4D] font-medium flex-1">{value ?? <span className="text-[#8993A4] italic">—</span>}</span>
     </div>
   );
 }
@@ -111,16 +111,16 @@ interface AlertBannerProps {
 
 export function AlertBanner({ variant, title, children, icon, className }: AlertBannerProps) {
   const styles = {
-    info: 'bg-[#EBF9FE] border-[#B2E9FC] text-[#006080]',
+    info: 'bg-[#EAF6FD] border-[#BAE7F8] text-[#006080]',
     warning: 'bg-[#FFFAEB] border-[#FEDF89] text-[#935800]',
     error: 'bg-[#FEF3F2] border-[#FECDCA] text-[#B42318]',
-    success: 'bg-[#ECFDF3] border-[#A6F4C5] text-[#126E4B]',
+    success: 'bg-[#ECFDF5] border-[#A6F4C5] text-[#126E4B]',
   };
   return (
-    <div className={cn('border rounded-md px-3 py-2.5 flex items-start gap-2.5 text-xs', styles[variant], className)} role="alert">
+    <div className={cn('border rounded-md px-3.5 py-2.5 flex items-start gap-2.5 text-xs', styles[variant], className)} role="alert">
       {icon && <span className="flex-shrink-0 mt-0.5">{icon}</span>}
       <div className="flex-1">
-        {title && <p className="font-semibold mb-0.5">{title}</p>}
+        {title && <p className="font-bold mb-0.5">{title}</p>}
         <div>{children}</div>
       </div>
     </div>
@@ -130,10 +130,10 @@ export function AlertBanner({ variant, title, children, icon, className }: Alert
 // ─── DemoNotice ───────────────────────────────────────────────────────────
 export function DemoNotice({ children }: { children: React.ReactNode }) {
   return (
-    <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded bg-[#EDF3FB] border border-[#D0E1F9] text-[11px] text-[#002970]" role="note">
-      <span className="w-1.5 h-1.5 rounded-full bg-[#00BAF2] flex-shrink-0" />
-      <span className="font-medium">Prototype · Demo Mode:</span>
-      <span className="text-[#344054]">{children}</span>
+    <div className="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-[#EBF7FD] border border-[#BAE7F8] text-[11px] text-[#005B7A] shadow-xs" role="note">
+      <span className="w-2 h-2 rounded-full bg-[#00BAF2] animate-pulse flex-shrink-0" />
+      <span className="font-bold text-[#002970]">NEXA demo:</span>
+      <span className="text-[#005B7A]">{children}</span>
     </div>
   );
 }
