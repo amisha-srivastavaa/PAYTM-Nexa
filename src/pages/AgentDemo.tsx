@@ -9,7 +9,6 @@ import {
   Bot,
   User,
   CheckCheck,
-  Sparkles,
   FileText,
   ShieldCheck,
   Zap,
@@ -100,7 +99,7 @@ const RAJU_SCENARIO: DemoScenario = {
     {
       id: 'm2',
       sender: 'nexa',
-      text: 'Namaste Raju Bhai! 🙏 Main NEXA hoon, Paytm ka AI sales teammate. Arjun ji ne bataya ki aap Raju General Store ke liye Paytm digital payment lagwana chahte hain.\n\nAapko kahin jaane ki zaroorat nahi hai. Bas apni dukaan ke board ya GST certificate ki ek photo yahan bhej dijiye, baaki kaam main sambhal loonga!',
+      text: 'Namaste Raju Bhai! 🙏 Main NEXA hoon, Paytm merchant onboarding mein madad ke liye. Arjun ji ne bataya ki aap Raju General Store ke liye Paytm digital payment lagwana chahte hain.\n\nAapko kahin jaane ki zaroorat nahi hai. Bas apni dukaan ke board ya GST certificate ki ek photo yahan bhej dijiye, baaki kaam main sambhal loonga!',
       timestamp: '11:16 AM',
     },
     {
@@ -157,9 +156,9 @@ const RAJU_SCENARIO: DemoScenario = {
   traces: [
     {
       stepIndex: 0,
-      phaseTitle: 'Hand-Off & Session Initialization',
+      phaseTitle: 'Hand-Off',
       badge: 'PROACTIVE TRIGGER',
-      badgeColor: 'bg-blue-100 text-[#002970]',
+      badgeColor: 'bg-amber-100 text-amber-900 border border-amber-300',
       thought:
         'FSE Arjun completed a 3-minute physical shop visit and registered lead (+91 98765 43210). Triggering proactive outreach in native Hindi/Hinglish to lock in merchant interest before drop-off.',
       toolCall: {
@@ -175,9 +174,9 @@ const RAJU_SCENARIO: DemoScenario = {
     },
     {
       stepIndex: 1,
-      phaseTitle: 'Multimodal Document Vision & Extraction',
+      phaseTitle: 'Document Extraction',
       badge: 'VISION OCR',
-      badgeColor: 'bg-purple-100 text-purple-800',
+      badgeColor: 'bg-amber-100 text-amber-900 border border-amber-300',
       thought:
         'Merchant uploaded a 1.8MB photo of his framed GST Certificate. Forwarding to Gemini 2.0 Flash Vision to extract structured fields and spatial bounding boxes.',
       toolCall: {
@@ -207,7 +206,7 @@ const RAJU_SCENARIO: DemoScenario = {
       stepIndex: 2,
       phaseTitle: 'Profiling & Verification',
       badge: 'DYNAMIC PROFILING',
-      badgeColor: 'bg-cyan-100 text-[#007FA5]',
+      badgeColor: 'bg-amber-100 text-amber-900 border border-amber-300',
       thought:
         'Merchant verified extracted address and stated daily digital transaction volume is 60–70 transactions with high evening footfall noise. Running recommendation engine.',
       toolCall: {
@@ -223,9 +222,9 @@ const RAJU_SCENARIO: DemoScenario = {
     },
     {
       stepIndex: 3,
-      phaseTitle: 'Algorithmic Hardware Recommendation',
+      phaseTitle: 'Hardware Match',
       badge: 'RECOMMENDATION ENGINE',
-      badgeColor: 'bg-amber-100 text-amber-800',
+      badgeColor: 'bg-amber-100 text-amber-900 border border-amber-300',
       thought:
         'Volume > 50 txns/day + grocery retail + noisy counter = Soundbox 4.0. Formulating transparent ROI pitch in Hindi focusing on fake screenshot fraud prevention.',
       toolCall: {
@@ -255,9 +254,9 @@ const RAJU_SCENARIO: DemoScenario = {
     },
     {
       stepIndex: 4,
-      phaseTitle: 'Autonomous Objection Handling (Hindi/Hinglish)',
+      phaseTitle: 'Objections',
       badge: 'OBJECTION AGENT',
-      badgeColor: 'bg-orange-100 text-orange-800',
+      badgeColor: 'bg-amber-100 text-amber-900 border border-amber-300',
       thought:
         'Merchant expressed hesitation regarding monthly rentals ("monthly kiraya"). Category: pricing_hidden_charges. Accessing corporate policy knowledge base. Explaining zero-rental terms and economic ROI.',
       toolCall: {
@@ -277,7 +276,7 @@ const RAJU_SCENARIO: DemoScenario = {
     },
     {
       stepIndex: 5,
-      phaseTitle: 'Application Compilation & FSE Dispatch',
+      phaseTitle: 'Compile & Submit',
       badge: 'EXECUTION & COMMIT',
       badgeColor: 'bg-emerald-100 text-emerald-800',
       thought:
@@ -439,10 +438,6 @@ export function AgentDemo() {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-bold bg-[#EBF9FE] text-[#002970] border border-[#B2E9FC]">
-                <Sparkles className="w-3.5 h-3.5 text-[#00BAF2]" />
-                Track 3: Autonomous AI Teammates
-              </span>
               <span className="text-[11px] font-semibold text-[#16845B] bg-[#ECFDF3] px-2 py-0.5 rounded-full border border-[#D1FADF] flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#16845B] animate-pulse" />
                 Live Agent Simulation
@@ -532,10 +527,10 @@ export function AgentDemo() {
                 className={cn(
                   'text-left p-1.5 rounded border transition-all text-[11px]',
                   isCurrent
-                    ? 'bg-[#EBF9FE] border-[#00BAF2] text-[#002970] font-bold shadow-xs'
+                    ? 'bg-[#FFFBEB] border-amber-400 text-amber-900 font-bold shadow-xs'
                     : isCompleted
                     ? 'bg-white border-[#D1FADF] text-[#16845B]'
-                    : 'bg-[#F8F9FC] border-[#E4EAF2] text-[#98A2B3]'
+                    : 'bg-[#F8F9FC] border-[#E4EAF2] text-[#667085]'
                 )}
               >
                 <div className="flex items-center justify-between mb-0.5">
@@ -543,7 +538,7 @@ export function AgentDemo() {
                     Step {idx + 1}
                   </span>
                   {isCompleted && <CheckCircle2 className="w-3 h-3 text-[#16845B]" />}
-                  {isCurrent && <span className="w-2 h-2 rounded-full bg-[#00BAF2] animate-ping" />}
+                  {isCurrent && <span className="w-2 h-2 rounded-full bg-amber-500 animate-ping" />}
                 </div>
                 <p className="truncate font-medium">{trace.phaseTitle}</p>
               </button>
@@ -578,8 +573,8 @@ export function AgentDemo() {
                 </div>
                 <div>
                   <div className="flex items-center gap-1">
-                    <h2 className="text-xs font-bold leading-tight">Paytm NEXA Agent</h2>
-                    <span className="text-[9px] bg-white/20 px-1 py-0.2 rounded text-white font-mono">Verified</span>
+                    <h2 className="text-xs font-bold leading-tight">NEXA Agent</h2>
+                    <span className="text-[9px] bg-white/20 px-1 py-0.2 rounded text-white/70 font-mono">Simulated</span>
                   </div>
                   <p className="text-[10px] text-[#B2E9FC] leading-tight">Autonomous Sales Teammate</p>
                 </div>
@@ -606,7 +601,7 @@ export function AgentDemo() {
               {/* Security Pill */}
               <div className="text-center my-1">
                 <span className="inline-block bg-[#FFF3C4] text-[#7A4F01] text-[9px] px-2 py-0.5 rounded-md shadow-2xs font-medium">
-                  🔒 End-to-end encrypted · Paytm Official Partner Verified
+                  🔒 End-to-end encrypted · Simulated demo
                 </span>
               </div>
 
@@ -706,14 +701,11 @@ export function AgentDemo() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2.5 border-b border-[#E4EAF2]">
               <div className="flex items-center gap-2">
                 <div className="w-7 h-7 rounded-lg bg-[#002970] text-white flex items-center justify-center shadow-xs">
-                  <Cpu className="w-4 h-4 text-[#00BAF2]" />
+                  <Cpu className="w-4 h-4 text-amber-400" />
                 </div>
                 <div>
                   <h3 className="text-xs font-bold text-[#002970] tracking-tight flex items-center gap-1.5">
                     NEXA Agent Brain
-                    <span className="text-[10px] font-mono text-[#00BAF2] bg-[#EBF9FE] px-1.5 py-0.2 rounded border border-[#B2E9FC]">
-                      ReAct Engine v2.4
-                    </span>
                   </h3>
                   <p className="text-[10px] text-[#667085]">
                     Real-time reasoning, tool invocation, and deterministic validation guardrails
@@ -741,8 +733,8 @@ export function AgentDemo() {
                     : 'text-[#667085] hover:bg-[#F5F8FC] hover:text-[#172B4D]'
                 )}
               >
-                <Zap className="w-3.5 h-3.5 text-[#00BAF2]" />
-                Live ReAct Trace
+                <Zap className="w-3.5 h-3.5 text-amber-400" />
+                Live Trace
               </button>
 
               <button
@@ -754,8 +746,8 @@ export function AgentDemo() {
                     : 'text-[#667085] hover:bg-[#F5F8FC] hover:text-[#172B4D]'
                 )}
               >
-                <FileText className="w-3.5 h-3.5 text-[#00BAF2]" />
-                Structured Extraction & Checks
+                <FileText className="w-3.5 h-3.5 text-amber-400" />
+                Extraction
               </button>
 
               <button
@@ -768,7 +760,7 @@ export function AgentDemo() {
                 )}
               >
                 <ShoppingBag className="w-3.5 h-3.5 text-[#00BAF2]" />
-                Hardware Recommendation Logic
+                Hardware
               </button>
 
               <button
@@ -781,7 +773,7 @@ export function AgentDemo() {
                 )}
               >
                 <ShieldCheck className="w-3.5 h-3.5 text-[#00BAF2]" />
-                FSE & Business ROI
+                ROI
               </button>
             </div>
           </div>
@@ -803,27 +795,27 @@ export function AgentDemo() {
               </div>
 
               {/* Thought Box */}
-              <div className="rounded-lg bg-[#F8F9FC] border border-[#E4EAF2] p-3 space-y-1.5">
-                <div className="flex items-center gap-1.5 text-[11px] font-bold text-[#002970]">
-                  <Bot className="w-3.5 h-3.5 text-[#00BAF2]" />
+              <div className="rounded-lg bg-[#FFFDF5] border border-amber-200 border-l-4 border-l-amber-400 p-3 space-y-1.5">
+                <div className="flex items-center gap-1.5 text-[11px] font-bold text-amber-900">
+                  <Bot className="w-3.5 h-3.5 text-amber-500" />
                   <span>Agent Reasoning (Thought)</span>
                 </div>
-                <p className="text-xs text-[#344054] leading-relaxed italic bg-white p-2.5 rounded border border-[#E4EAF2]">
+                <p className="text-xs text-[#344054] leading-relaxed italic bg-white p-2.5 rounded border border-amber-100">
                   "{currentTrace.thought}"
                 </p>
               </div>
 
               {/* Tool Invocation Card */}
               {currentTrace.toolCall && (
-                <div className="rounded-lg bg-[#FFF9F5] border border-[#FEE4D2] p-3 space-y-2">
+                <div className="rounded-lg bg-[#FFFBEB] border border-[#FDE68A] p-3 space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold text-[#B54708] flex items-center gap-1.5">
-                      <Zap className="w-3.5 h-3.5" />
-                      Tool Executed: <code className="font-mono bg-white px-1.5 py-0.5 rounded border border-[#FEE4D2]">{currentTrace.toolCall.toolName}()</code>
+                    <span className="text-[11px] font-bold text-[#92400E] flex items-center gap-1.5">
+                      <Zap className="w-3.5 h-3.5 text-amber-600 animate-pulse" />
+                      Tool Executed: <code className="font-mono bg-white px-1.5 py-0.5 rounded border border-[#FDE68A] text-[#92400E]">{currentTrace.toolCall.toolName}()</code>
                     </span>
-                    <span className="text-[10px] text-[#B54708] font-mono">Status: SUCCESS</span>
+                    <span className="text-[10px] text-amber-800 font-bold font-mono bg-amber-100 px-1.5 py-0.5 rounded border border-amber-300">SUCCESS</span>
                   </div>
-                  <pre className="text-[11px] font-mono bg-[#1E293B] text-[#38BDF8] p-2.5 rounded-md overflow-x-auto">
+                  <pre className="text-[11px] font-mono bg-[#1E293B] text-amber-300 p-2.5 rounded-md overflow-x-auto">
                     {JSON.stringify(currentTrace.toolCall.params, null, 2)}
                   </pre>
                 </div>
@@ -933,7 +925,7 @@ export function AgentDemo() {
             <div className="bg-white rounded-xl border border-[#E4EAF2] p-4 shadow-xs flex-1 space-y-3 overflow-y-auto max-h-[510px]">
               <div>
                 <h4 className="text-xs font-bold text-[#002970] mb-0.5">
-                  Algorithmic Device Selection Rationale
+                  Device Selection Rationale
                 </h4>
                 <p className="text-[11px] text-[#667085]">
                   How NEXA determines whether to pitch a simple QR Stand, a Soundbox, or a Card POS Terminal.

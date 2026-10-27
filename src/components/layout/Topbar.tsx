@@ -1,16 +1,18 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Search, Bell, ChevronDown, RotateCcw, Info, X, Moon, Sun, Wifi, WifiOff, Sparkles } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { Search, Bell, ChevronDown, RotateCcw, Info, X, Moon, Sun } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getMerchants, resetDemoStore } from '@/lib/store';
 import { Brand } from '@/components/ui/Brand';
 
 interface TopbarProps {
-  title: string;
+  title?: string;
 }
 
 export function Topbar({ title }: TopbarProps) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const isDirectoryPage = location.pathname === '/merchants';
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Array<{ id: string; businessName: string; status: string; city: string }>>([]);
   const [showDropdown, setShowDropdown] = useState(false);
@@ -18,22 +20,11 @@ export function Topbar({ title }: TopbarProps) {
   const [showAbout, setShowAbout] = useState(false);
   const [demoMode, setDemoMode] = useState(() => localStorage.getItem('nexa-demo-mode') === 'true');
   const [theme, setTheme] = useState<'light' | 'dark'>(() => localStorage.getItem('nexa-theme') === 'dark' ? 'dark' : 'light');
-  const [online, setOnline] = useState(() => navigator.onLine);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
     localStorage.setItem('nexa-theme', theme);
   }, [theme]);
-
-  useEffect(() => {
-    const updateOnline = () => setOnline(navigator.onLine);
-    window.addEventListener('online', updateOnline);
-    window.addEventListener('offline', updateOnline);
-    return () => {
-      window.removeEventListener('online', updateOnline);
-      window.removeEventListener('offline', updateOnline);
-    };
-  }, []);
 
   const toggleDemoMode = () => {
     if (demoMode) {
@@ -79,87 +70,92 @@ export function Topbar({ title }: TopbarProps) {
   return (
     <>
       <header className="min-h-14 flex-shrink-0 bg-white border-b border-[#D8ECF8] flex items-center px-3 sm:px-5 gap-3 z-20" role="banner">
-        {/* Page Title Context */}
-        <div className="flex items-center gap-3 min-w-0 md:min-w-[150px]">
+        {/* Territory Context — no duplicate page title */}
+        <div className="flex items-center gap-2.5 min-w-0">
           <span className="md:hidden"><Brand compact linked /></span>
-          <span className="hidden md:inline text-sm font-display font-bold text-[#09254b] tracking-tight">{title}</span>
+          <div className="hidden md:flex items-center gap-2">
+            <span className="text-xs font-bold text-[#002970]">Bengaluru Central</span>
+            <span className="text-[10px] font-semibold text-[#007FA5] bg-[#E1F4FD] border border-[#BAE7F8] px-1.5 py-0.5 rounded">
+              Territory
+            </span>
+          </div>
         </div>
 
-        {/* Global Merchant Search with Paytm light-blue glow */}
-        <div className="relative flex-1 max-w-sm hidden sm:block">
-          <div className="relative">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#00BAF2]" aria-hidden />
-            <input
-              type="search"
-              placeholder="Search merchants by store, owner, mobile, or city…"
-              value={query}
-              onChange={e => handleSearch(e.target.value)}
-              onFocus={() => query && setShowDropdown(true)}
-              onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
-              className={cn(
-                'w-full h-8 pl-8 pr-3 text-xs border border-[#D8ECF8] rounded bg-[#F2F8FD] text-[#172B4D] placeholder:text-[#8993A4]',
-                'focus:outline-none focus:ring-2 focus:ring-[#00BAF2]/30 focus:border-[#00BAF2] focus:bg-white transition-all',
-              )}
-              aria-label="Search merchants"
-              aria-autocomplete="list"
-              aria-expanded={results.length > 0}
-            />
-          </div>
-          {results.length > 0 && showDropdown !== false && (
-            <div className="absolute top-full mt-1.5 left-0 right-0 bg-white border border-[#D8ECF8] rounded-md shadow-paytm-md z-50 py-1" role="listbox">
-              {results.map(r => (
-                <button
-                  key={r.id}
-                  role="option"
-                  className="w-full px-3 py-2 text-left hover:bg-[#F0F8FD] flex items-center justify-between transition-colors border-b border-[#EBF4FA] last:border-0"
-                  onClick={() => handleSelect(r.id)}
-                >
-                  <div className="truncate pr-2">
-                    <p className="font-semibold text-[#002970] text-xs truncate">{r.businessName}</p>
-                    <p className="text-[10px] text-[#5E6C84]">{r.city}</p>
-                  </div>
-                  <span className="text-[10px] font-semibold text-[#007FA5] bg-[#E1F4FD] border border-[#BAE7F8] px-1.5 py-0.5 rounded capitalize flex-shrink-0">
-                    {r.status.replace('_', ' ')}
-                  </span>
-                </button>
-              ))}
+        {/* Global Merchant Search with Paytm light-blue glow — hidden on pages with their own search */}
+        {!isDirectoryPage && (
+          <div className="relative flex-1 max-w-sm hidden sm:block">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#00BAF2]" aria-hidden />
+              <input
+                type="search"
+                placeholder="Search merchants by store, owner, mobile, or city…"
+                value={query}
+                onChange={e => handleSearch(e.target.value)}
+                onFocus={() => query && setShowDropdown(true)}
+                onBlur={() => setTimeout(() => setShowDropdown(false), 200)}
+                className={cn(
+                  'w-full h-8 pl-8 pr-3 text-xs border border-[#D8ECF8] rounded bg-[#F2F8FD] text-[#172B4D] placeholder:text-[#8993A4]',
+                  'focus:outline-none focus:ring-2 focus:ring-[#00BAF2]/30 focus:border-[#00BAF2] focus:bg-white transition-all',
+                )}
+                aria-label="Search merchants"
+                aria-autocomplete="list"
+                aria-expanded={results.length > 0}
+              />
             </div>
-          )}
-        </div>
+            {results.length > 0 && showDropdown !== false && (
+              <div className="absolute top-full mt-1.5 left-0 right-0 bg-white border border-[#D8ECF8] rounded-md shadow-paytm-md z-50 py-1" role="listbox">
+                {results.map(r => (
+                  <button
+                    key={r.id}
+                    role="option"
+                    className="w-full px-3 py-2 text-left hover:bg-[#F0F8FD] flex items-center justify-between transition-colors border-b border-[#EBF4FA] last:border-0"
+                    onClick={() => handleSelect(r.id)}
+                  >
+                    <div className="truncate pr-2">
+                      <p className="font-semibold text-[#002970] text-xs truncate">{r.businessName}</p>
+                      <p className="text-[10px] text-[#5E6C84]">{r.city}</p>
+                    </div>
+                    <span className="text-[10px] font-semibold text-[#007FA5] bg-[#E1F4FD] border border-[#BAE7F8] px-1.5 py-0.5 rounded capitalize flex-shrink-0">
+                      {r.status.replace('_', ' ')}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Right Actions */}
         <div className="ml-auto flex items-center gap-1.5 sm:gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-[#D8ECF8] bg-[#F7FCFE] px-2 sm:px-2.5 min-h-9 text-[10px] font-semibold text-[#007FA5]" aria-live="polite">
-            {online ? <Wifi className="h-3.5 w-3.5" aria-hidden="true" /> : <WifiOff className="h-3.5 w-3.5" aria-hidden="true" />}
-            <span>{online ? 'Offline-ready' : 'Offline mode'}</span>
-            <span className={cn('h-2 w-2 rounded-full', online ? 'bg-emerald-500' : 'bg-amber-500')} aria-hidden="true" />
-          </span>
-
-          <button
-            onClick={() => navigate('/agent-demo')}
-            aria-label="Open AI Teammate Demo"
-            className="touch-target inline-flex items-center gap-1.5 rounded-full border border-[#BAE7F8] bg-[#EBF9FE] px-2.5 text-xs font-semibold text-[#002970] transition-all hover:bg-[#D5F3FD] sm:min-h-9"
-          >
-            <Sparkles className="h-3.5 w-3.5 text-[#00BAF2]" />
-            <span className="hidden sm:inline font-bold">AI Teammate Demo</span>
-            <span className="h-1.5 w-1.5 rounded-full bg-[#16845B] animate-pulse" aria-hidden="true" />
-          </button>
-
-          <span className="hidden lg:inline-flex items-center gap-1.5 rounded-full border border-[#D8ECF8] bg-[#F7FCFE] px-2.5 py-1 text-[10px] font-semibold text-[#52677d]">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#16845B]" />
-            Field operations
-          </span>
-
           <button
             type="button"
             onClick={toggleDemoMode}
             aria-pressed={demoMode}
             aria-label={demoMode ? 'Turn demo mode off' : 'Turn demo mode on and load sample merchant'}
-            className={cn('touch-target inline-flex items-center justify-center gap-1.5 rounded-full border px-2.5 text-[11px] font-bold', demoMode ? 'border-[#00BAF2] bg-[#E1F4FD] text-[#007FA5]' : 'border-[#D8ECF8] bg-white text-[#52677d] hover:bg-[#F7FCFE]')}
+            className={cn(
+              'touch-target inline-flex items-center justify-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-bold transition-all',
+              demoMode
+                ? 'border-[#00BAF2] bg-[#E1F4FD] text-[#002970] ring-1 ring-[#00BAF2] shadow-2xs'
+                : 'border-[#D8ECF8] bg-white text-[#52677d] hover:bg-[#F7FCFE]'
+            )}
           >
-            <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
+            <span
+              className={cn(
+                'w-2 h-2 rounded-full transition-colors flex-shrink-0',
+                demoMode ? 'bg-[#00BAF2] shadow-xs animate-pulse' : 'bg-gray-300'
+              )}
+              aria-hidden="true"
+            />
             <span className="hidden sm:inline">Demo mode</span>
             <span className="sm:hidden">Demo</span>
+            <span
+              className={cn(
+                'text-[9px] font-mono uppercase px-1 py-0.2 rounded font-bold',
+                demoMode ? 'bg-[#00BAF2]/20 text-[#007FA5]' : 'bg-gray-100 text-gray-500'
+              )}
+            >
+              {demoMode ? 'ON' : 'OFF'}
+            </span>
           </button>
 
           <button

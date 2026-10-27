@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard,
@@ -23,8 +24,8 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { to: '/', icon: <LayoutDashboard className="w-4 h-4" />, label: 'Overview' },
-  { to: '/agent-demo', icon: <Bot className="w-4 h-4 text-[#00BAF2]" />, label: 'AI Teammate (Live)', group: 'Autonomous Teammate' },
+  { to: '/', icon: <LayoutDashboard className="w-4 h-4" />, label: 'Merchant Overview' },
+  { to: '/agent-demo', icon: <Bot className="w-4 h-4 text-amber-500" />, label: 'AI Teammate (Live)', group: 'Autonomous Teammate' },
   { to: '/merchants', icon: <Users className="w-4 h-4" />, label: 'Merchants', group: 'Field Operations' },
   { to: '/new-merchant', icon: <UserPlus className="w-4 h-4" />, label: 'New Merchant', group: 'Field Operations' },
   { to: '/applications', icon: <FileText className="w-4 h-4" />, label: 'Applications', group: 'Field Operations' },
@@ -35,6 +36,19 @@ const NAV_ITEMS: NavItem[] = [
 
 export function Sidebar() {
   const location = useLocation();
+  const [isOnline, setIsOnline] = useState(() => typeof navigator !== 'undefined' ? navigator.onLine : true);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOnline(true);
+    const handleOffline = () => setIsOnline(false);
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
   let currentGroup = '';
 
   return (
@@ -83,13 +97,21 @@ export function Sidebar() {
         })}
       </nav>
 
-      {/* Bottom Environment Indicator */}
+      {/* Bottom Environment Indicator with Online/Offline Dot */}
       <div className="p-3 border-t border-[#D8ECF8] bg-[#F7FCFE]">
-        <div className="flex items-center gap-2 px-2.5 py-2 rounded bg-white border border-[#D8ECF8] shadow-2xs">
-          <span className="w-2 h-2 rounded-full bg-[#00BAF2] animate-pulse flex-shrink-0" />
+        <div className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg bg-white border border-[#D8ECF8] shadow-2xs">
+          <div className="relative flex items-center justify-center flex-shrink-0">
+            <span className={cn('w-2 h-2 rounded-full', isOnline ? 'bg-[#16845B]' : 'bg-[#F59E0B]')} />
+            <span className={cn('absolute w-2 h-2 rounded-full animate-ping opacity-75', isOnline ? 'bg-[#16845B]' : 'bg-[#F59E0B]')} />
+          </div>
           <div className="min-w-0 flex-1">
             <p className="text-[11px] font-bold text-[#002970] truncate">NEXA demo workspace</p>
-            <p className="text-[10px] text-[#5E6C84] truncate">Local field workflow</p>
+            <p className="text-[10px] text-[#5E6C84] flex items-center gap-1 truncate">
+              <span className={isOnline ? 'text-[#16845B] font-semibold' : 'text-[#B76E00] font-semibold'}>
+                {isOnline ? 'Online' : 'Offline'}
+              </span>
+              <span>· Offline-ready</span>
+            </p>
           </div>
         </div>
       </div>

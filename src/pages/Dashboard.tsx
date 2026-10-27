@@ -59,24 +59,19 @@ export function Dashboard() {
   const apps = getApplications();
 
   // Pending actions items
-  const incompleteMerchants = merchants.filter(m => m.status === 'incomplete' || m.status === 'needs_review');
+  const incompleteMerchants = merchants.filter(m => m.status === 'incomplete' || m.status === 'needs_review' || m.status === 'extraction_failed');
   const readyApps = apps.filter(a => a.status === 'ready_for_review');
   const pendingVisits = visits.slice(0, 4);
 
-  // Status breakdown calculation
+  // Status breakdown calculation — fully reconciled with total merchants
   const total = merchants.length || 1;
   const newCount = merchants.filter(m => m.status === 'new').length;
-  const reviewCount = merchants.filter(m => m.status === 'needs_review' || m.status === 'incomplete').length;
+  const reviewCount = merchants.filter(m => m.status === 'needs_review' || m.status === 'incomplete' || m.status === 'extraction_failed').length;
   const readyCount = merchants.filter(m => m.status === 'ready_for_submission').length;
   const submittedCount = merchants.filter(m => m.status === 'submitted').length;
-  const today = new Date().toDateString();
-  const completedToday = merchants.filter(m =>
-    ['ready_for_submission', 'submitted'].includes(m.status) &&
-    new Date(m.updatedAt).toDateString() === today
-  ).length;
-  const onboardedToday = completedToday || 4;
-  const timeSavedMinutes = completedToday ? completedToday * 22 : 88;
-  const dropOffsPrevented = completedToday ? Math.ceil(completedToday * 1.5) : 6;
+  const onboardedToday = submittedCount;
+  const timeSavedMinutes = onboardedToday * 22;
+  const dropOffsPrevented = onboardedToday > 0 ? Math.ceil(onboardedToday * 1.5) : 0;
 
   return (
     <div className="p-4 sm:p-6 max-w-7xl mx-auto space-y-4">
@@ -134,7 +129,7 @@ export function Dashboard() {
       <section className="grid grid-cols-1 gap-2 sm:grid-cols-3" aria-label="Illustrative impact today">
         <div className="flex items-center gap-3 rounded-2xl border border-[#D8ECF8] bg-white p-3.5 shadow-sm">
           <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#e6f7f9] text-[#007FA5]"><Users className="h-5 w-5" aria-hidden="true" /></span>
-          <div><p className="text-[10px] font-semibold uppercase tracking-wide text-[#71859A]">Onboarded today</p><p className="font-display text-lg font-bold text-[#09254b]">{onboardedToday}</p></div>
+          <div><p className="text-[10px] font-semibold uppercase tracking-wide text-[#71859A]">Total Onboarded</p><p className="font-display text-lg font-bold text-[#09254b]">{onboardedToday}</p></div>
         </div>
         <div className="flex items-center gap-3 rounded-2xl border border-[#D8ECF8] bg-white p-3.5 shadow-sm">
           <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#E1F4FD] text-[#007FA5]"><Clock className="h-5 w-5" aria-hidden="true" /></span>
@@ -150,9 +145,9 @@ export function Dashboard() {
       <section className="flex flex-col gap-3 rounded-2xl border border-[#D8ECF8] bg-white p-4 shadow-sm sm:flex-row sm:items-center sm:justify-between" aria-labelledby="teammate-title">
         <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#E1F4FD] px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-[#007FA5]">
-              <Sparkles className="h-3 w-3" aria-hidden="true" />
-              Autonomous AI Teammate · Track 3
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-amber-800">
+              <Sparkles className="h-3 w-3 text-amber-600" aria-hidden="true" />
+              Autonomous AI Teammate
             </span>
             <span className="text-[10px] font-semibold text-[#71859A]">Interactive WhatsApp · ReAct simulation</span>
           </div>
@@ -311,9 +306,14 @@ export function Dashboard() {
         <div className="lg:col-span-5 space-y-4">
           {/* Onboarding Progress Summary */}
           <div className="bg-white border border-[#D8ECF8] rounded-lg p-4 shadow-paytm space-y-3">
-            <h2 className="text-xs font-bold text-[#002970] uppercase tracking-wide">
-              Onboarding Pipeline Funnel
-            </h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-xs font-bold text-[#002970] uppercase tracking-wide">
+                Onboarding Pipeline Funnel
+              </h2>
+              <span className="text-[10px] font-bold text-[#007FA5] bg-[#E1F4FD] border border-[#BAE7F8] px-2 py-0.5 rounded">
+                {newCount + reviewCount + readyCount + submittedCount} Total Merchants
+              </span>
+            </div>
             <div className="grid grid-cols-4 gap-2 text-center">
               <div className="p-2 rounded-lg bg-[#E5F6FD] border border-[#BAE7F8]">
                 <p className="text-sm font-bold text-[#00BAF2] tabular-nums">{newCount}</p>
@@ -377,8 +377,11 @@ export function Dashboard() {
                 variant="ghost"
                 size="xs"
                 onClick={() => navigate('/follow-ups')}
+                rightIcon={<ArrowRight className="w-3 h-3 text-[#00BAF2]" />}
+                className="text-[11px] font-semibold text-[#007FA5] hover:text-[#002970]"
+                aria-label="View all scheduled field visits"
               >
-                All
+                View all visits
               </Button>
             </div>
 
