@@ -212,8 +212,9 @@ export function DocumentUpload({ merchant, onDocumentReady, demoMode = false }: 
                 <>
                   <div className="absolute inset-0 bg-[#09254b]/5" aria-hidden="true" />
                   <div className="scan-line" aria-hidden="true" />
-                  <span className="absolute bottom-2 left-2 rounded-full bg-[#09254b]/85 px-2.5 py-1 text-[10px] font-semibold text-white">
-                    AI reading storefront
+                  <span className="absolute bottom-2 left-2 inline-flex items-center gap-1.5 rounded-full bg-[#09254b]/90 border border-amber-400/40 px-2.5 py-1 text-[10px] font-semibold text-amber-200 shadow-md">
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+                    AI reading storefront…
                   </span>
                 </>
               )}

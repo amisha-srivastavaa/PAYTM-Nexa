@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CheckCircle2, Edit3, AlertTriangle, X, Check, FileImage, ClipboardList } from 'lucide-react';
+import { CheckCircle2, Edit3, AlertTriangle, X, Check, FileImage, ClipboardList, Sparkles } from 'lucide-react';
 import { FieldStatusBadge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/FormFields';
@@ -97,8 +97,8 @@ function FieldRow({ fieldKey, field, onUpdate, delay }: FieldRowProps) {
           )}
 
           {field.evidence && (
-            <p className="text-[10px] text-[#667085] mt-1 italic flex items-center gap-1">
-              <span className="w-1 h-1 rounded-full bg-[#00BAF2]" />
+            <p className="text-[10px] text-[#667085] mt-1 italic flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-500 flex-shrink-0" />
               Evidence: {field.evidence}
             </p>
           )}
@@ -178,8 +178,9 @@ export function ExtractionReview({ merchant, document, onConfirmed }: Extraction
                 <FileImage className="w-4 h-4 text-[#002970]" />
                 <h3 className="text-xs font-semibold text-[#172B4D]">Source Document</h3>
               </div>
-              <span className="text-[10px] text-[#16845B] font-medium bg-[#ECFDF3] px-1.5 py-0.5 rounded border border-[#A6F4C5]">
-              AI read · reviewable
+              <span className="inline-flex items-center gap-1 text-[10px] font-semibold text-amber-800 bg-amber-50 px-2 py-0.5 rounded border border-amber-200">
+                <Sparkles className="w-2.5 h-2.5 text-amber-600" />
+                AI read · reviewable
               </span>
             </div>
 

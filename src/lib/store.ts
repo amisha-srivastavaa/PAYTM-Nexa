@@ -46,8 +46,23 @@ function generateId(prefix: string): string {
   return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 }
 
+const STORE_VERSION = 'v3_blr_territory';
+const VERSION_KEY = 'sp_seed_version';
+
 // ─── Initialize seed data once ─────────────────────────────────────────────
 export function initDemoStore(): void {
+  const currentVersion = localStorage.getItem(VERSION_KEY);
+  if (currentVersion !== STORE_VERSION) {
+    save(KEYS.merchants, DEMO_MERCHANTS);
+    save(KEYS.documents, DEMO_DOCUMENTS);
+    save(KEYS.applications, DEMO_APPLICATIONS);
+    save(KEYS.visits, DEMO_VISITS);
+    save(KEYS.recommendations, DEMO_RECOMMENDATIONS);
+    save(KEYS.activity, DEMO_ACTIVITY);
+    localStorage.setItem(VERSION_KEY, STORE_VERSION);
+    return;
+  }
+
   if (!localStorage.getItem(KEYS.merchants)) {
     save(KEYS.merchants, DEMO_MERCHANTS);
   }
@@ -70,6 +85,7 @@ export function initDemoStore(): void {
 
 export function resetDemoStore(): void {
   Object.values(KEYS).forEach(k => localStorage.removeItem(k));
+  localStorage.removeItem(VERSION_KEY);
   initDemoStore();
 }
 
